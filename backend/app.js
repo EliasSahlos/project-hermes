@@ -36,7 +36,7 @@ async function scrapeArticle(url) {
 
         const timeTag = $('time').first(); // Select the first time tag
         const date = timeTag.text().trim(); // Extract the text content of the time tag
-
+        //test
         let articleContent = $('div.entry-content').text(); // Update this selector
         articleContent = articleContent.replace(date, '').trim();
 

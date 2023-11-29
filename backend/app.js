@@ -149,7 +149,17 @@ async function scrapeArticle(page, url, titleSelector, contentSelector, timeSele
                 // console.log(timeoutError)
             }
 
-            const date = await page.$eval(timeSelector, timeElement => timeElement.textContent.trim());
+            const timeElement = await page.$(timeSelector);
+
+            let date;
+            if (timeElement) {
+                date = await page.$eval(timeSelector, timeElement => timeElement.textContent.trim());
+            } else {
+                // If timeElement doesn't exist, use the current date and time
+                console.log("I had to change the time on this one bro")
+                date = new Date().toISOString();
+            }
+            //const date = await page.$eval(timeSelector, timeElement => timeElement.textContent.trim());
 
             // Wait for the content element to be present on the page, with a longer timeout
             const contentElements = await page.$$(contentSelector);
@@ -198,14 +208,14 @@ app.get('/api/articles', async (req, res) => {
     const politicsArticlesReporter = await fetchArticlesFromWebsite('reporter', 'politics');
     const economyArticlesNewsbomb = await fetchArticlesFromWebsite('newsbomb', 'economy');
     const politicsArticlesNewsbomb = await fetchArticlesFromWebsite('newsbomb', 'politics');
-    // const economyArticlesKathimerini = await fetchArticlesFromWebsite('kathimerini', 'economy');
-    // const politicsArticlesKathimerini = await fetchArticlesFromWebsite('kathimerini', 'politics');
+    const economyArticlesKathimerini = await fetchArticlesFromWebsite('kathimerini', 'economy');
+    const politicsArticlesKathimerini = await fetchArticlesFromWebsite('kathimerini', 'politics');
     const economyArticlesCnn = await fetchArticlesFromWebsite('cnn', 'economy');
     const politicsArticlesCnn = await fetchArticlesFromWebsite('cnn', 'politics');
 
 
-    const economyArticles = [...economyArticlesNewsit, ...economyArticlesEnikos, ...economyArticlesReporter, ...economyArticlesNewsbomb, ...economyArticlesCnn];
-    const politicsArticles = [...politicsArticlesNewsit, ...politicsArticlesEnikos, ...politicsArticlesReporter, ...politicsArticlesNewsbomb, ...politicsArticlesCnn];
+    const economyArticles = [...economyArticlesNewsit, ...economyArticlesEnikos, ...economyArticlesReporter, ...economyArticlesNewsbomb, ...economyArticlesCnn, ...economyArticlesKathimerini];
+    const politicsArticles = [...politicsArticlesNewsit, ...politicsArticlesEnikos, ...politicsArticlesReporter, ...politicsArticlesNewsbomb, ...politicsArticlesCnn, ...politicsArticlesKathimerini];
 
     //In case we want to measure the size of the json file, uncomment the lines below
     // const allArticles = {

@@ -11,6 +11,7 @@ const websites = {
             titleSelector: 'h1.entry-title',
             contentSelector: 'div.entry-content',
             timeSelector: 'time',
+            imageSelector: 'img.attachment-full'
         },
         politics: {
             url: 'https://www.newsit.gr/category/politikh/',
@@ -18,6 +19,7 @@ const websites = {
             titleSelector: 'h1.entry-title',
             contentSelector: 'div.entry-content',
             timeSelector: 'time',
+            imageSelector: 'img.attachment-full'
         },
     },
     enikos: {
@@ -27,6 +29,7 @@ const websites = {
             titleSelector: 'div.content-item h1',
             contentSelector: 'div.articletext',
             timeSelector: 'time',
+            imageSelector: 'img'
         },
         politics: {
             url: 'https://www.enikos.gr/politics/',
@@ -34,6 +37,7 @@ const websites = {
             titleSelector: 'div.content-item h1',
             contentSelector: 'div.articletext',
             timeSelector: 'time',
+            imageSelector: 'img'
         },
     },
     reporter: {
@@ -43,6 +47,7 @@ const websites = {
             titleSelector: 'h2.itemTitle',
             contentSelector: 'div.itemFullText',
             timeSelector: 'span.itemDateCreated',
+            imageSelector: 'img.c5'
         },
         politics: {
             url: 'https://www.reporter.gr/Eidhseis/Politikh',
@@ -50,6 +55,7 @@ const websites = {
             titleSelector: 'h2.itemTitle',
             contentSelector: 'div.itemFullText',
             timeSelector: 'span.itemDateCreated',
+            imageSelector: 'img.c5'
         },
     },
     kathimerini: {
@@ -58,14 +64,16 @@ const websites = {
             articleSelector: 'div.media-content a',
             titleSelector: 'h1.entry-title',
             contentSelector: 'div.entry-content',
-            timeSelector: 'time'
+            timeSelector: 'time',
+            imageSelector: 'img.picture-nx-medium-two'
         },
         politics: {
             url: 'https://www.kathimerini.gr/politics/',
             articleSelector: 'div.media-content a',
             titleSelector: 'h1.entry-title',
             contentSelector: 'div.entry-content',
-            timeSelector: 'time'
+            timeSelector: 'time',
+            imageSelector: 'img.picture-nx-medium-two'
         }
     },
     newsbomb: {
@@ -75,6 +83,7 @@ const websites = {
             titleSelector: 'h1',
             contentSelector: 'div.main-text',
             timeSelector: 'time',
+            imageSelector: 'img:first-child'
         },
         politics: {
             url: 'https://www.newsbomb.gr/politikh',
@@ -82,6 +91,7 @@ const websites = {
             titleSelector: 'h1',
             contentSelector: 'div.main-text',
             timeSelector: 'time',
+            imageSelector: 'img:first-child'
         },
     },
     cnn: {
@@ -91,6 +101,7 @@ const websites = {
             titleSelector: 'h1.main-title',
             contentSelector: 'div.story-fulltext',
             timeSelector: 'time',
+            imageSelector: 'img:first-child'
         },
         politics: {
             url: 'https://www.cnn.gr/politiki',
@@ -98,12 +109,13 @@ const websites = {
             titleSelector: 'h1.main-title',
             contentSelector: 'div.story-fulltext',
             timeSelector: 'time',
+            imageSelector: 'img:first-child'
         },
     },
 };
 
 async function fetchArticlesFromWebsite(website, category) {
-    const {url, articleSelector, titleSelector, contentSelector, timeSelector} = websites[website][category];
+    const {url, articleSelector, titleSelector, contentSelector, timeSelector, imageSelector} = websites[website][category];
     const articles = [];
 
     try {
@@ -118,7 +130,7 @@ async function fetchArticlesFromWebsite(website, category) {
         // Scrape up to 10 articles
         for (let i = 0; i < Math.min(articleLinks.length, 10); i++) {
             const articleUrl = articleLinks[i];
-            const articleData = await scrapeArticle(page, articleUrl, titleSelector, contentSelector, timeSelector);
+            const articleData = await scrapeArticle(page, articleUrl, titleSelector, contentSelector, timeSelector, imageSelector);
             articles.push(articleData);
         }
 
@@ -130,12 +142,14 @@ async function fetchArticlesFromWebsite(website, category) {
     return articles;
 }
 
-async function scrapeArticle(page, url, titleSelector, contentSelector, timeSelector) {
+async function scrapeArticle(page, url, titleSelector, contentSelector, timeSelector, imageSelector) {
     try {
         if (url) {
             await page.goto(url, {waitUntil: 'domcontentloaded'});
 
             const title = await page.$eval(titleSelector, titleElement => titleElement.textContent.trim());
+
+            const image = await page.$eval(imageSelector, (imageElement) => imageElement ? imageElement.src : null);
 
             // Check if og:site_name is present within a small timeout, otherwise set a default value
             let source = 'Unknown Source';
@@ -150,7 +164,6 @@ async function scrapeArticle(page, url, titleSelector, contentSelector, timeSele
             }
 
             const timeElement = await page.$(timeSelector);
-
             let date;
             if (timeElement) {
                 date = await page.$eval(timeSelector, timeElement => timeElement.textContent.trim());
@@ -187,6 +200,7 @@ async function scrapeArticle(page, url, titleSelector, contentSelector, timeSele
                 article: articleContent.trim(),
                 date,
                 source,
+                image
             };
         } else {
             console.error('URL is undefined for the article. Skipping.');

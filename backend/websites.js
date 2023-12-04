@@ -24,7 +24,7 @@ const websites = {
             titleSelector: 'div.content-item h1',
             contentSelector: 'div.articletext',
             timeSelector: 'time',
-            imageSelector: 'img'
+            imageSelector: 'div.article-wrapper img:first-child'
         },
         politics: {
             url: 'https://www.enikos.gr/politics/',
@@ -32,7 +32,7 @@ const websites = {
             titleSelector: 'div.content-item h1',
             contentSelector: 'div.articletext',
             timeSelector: 'time',
-            imageSelector: 'img'
+            imageSelector: 'div.article-wrapper img:first-child'
         },
     },
     reporter: {
@@ -78,7 +78,7 @@ const websites = {
             titleSelector: 'h1',
             contentSelector: 'div.main-text',
             timeSelector: 'time',
-            imageSelector: 'img:first-child'
+            imageSelector: 'picture.main-image img'
         },
         politics: {
             url: 'https://www.newsbomb.gr/politikh',
@@ -86,7 +86,7 @@ const websites = {
             titleSelector: 'h1',
             contentSelector: 'div.main-text',
             timeSelector: 'time',
-            imageSelector: 'img:first-child'
+            imageSelector: 'picture.main-image img'
         },
     },
     cnn: {
@@ -96,7 +96,7 @@ const websites = {
             titleSelector: 'h1.main-title',
             contentSelector: 'div.story-fulltext',
             timeSelector: 'time',
-            imageSelector: 'img:first-child'
+            imageSelector: 'picture.main-image img'
         },
         politics: {
             url: 'https://www.cnn.gr/politiki',
@@ -104,7 +104,7 @@ const websites = {
             titleSelector: 'h1.main-title',
             contentSelector: 'div.story-fulltext',
             timeSelector: 'time',
-            imageSelector: 'img:first-child'
+            imageSelector: 'picture.main-image img'
         },
     },
 };

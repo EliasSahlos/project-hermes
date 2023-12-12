@@ -5,6 +5,7 @@
 /backend/node_modules
 
 /backend/.idea
+/backend/.env
 
 /frontend/.pnp
 frontend/.pnp.js

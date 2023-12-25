@@ -2,10 +2,10 @@ const {chromium} = require("playwright");
 const websites = require('./websites')
 
 const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
-const titleSelectors = ['h1', 'h2', 'h3', '.title', '.article-title', '.entry-title']
+const titleSelectors = ['.entry-title', '.article-title', '.itemTitle', '.title', 'h1', 'h2', 'h3']
 const articleSelectors = ['div.articletext', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext']
-const timeSelectors = ['time', '.time', '.date']
-const imageSelectors = ['img', 'picture', '.image', '.img']
+const timeSelectors = ['.time', '.date', 'time']
+const imageSelectors = ['.image', '.img', 'img', 'picture']
 
 async function fetchArticlesFromWebsites() {
     const articlesByWebsite = {};
@@ -78,9 +78,16 @@ async function scrapeArticle(page, articleUrl) {
                 }
             }
 
+            let foundTimestamp = false
             for (const selector of timeSelectors) {
-                articleData.time = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
-                if (articleData.time) break;
+                articleData.time = await page.$eval(selector, el => el.getAttribute('datetime')).catch(() => '');
+                if (articleData.time) {
+                    foundTimestamp = true
+                    break;
+                }
+                if (!foundTimestamp){
+                    articleData.time = new Date().toISOString()
+                }
             }
 
             for (const selector of imageSelectors) {

@@ -1,108 +1,100 @@
 const {chromium} = require("playwright");
 const websites = require('./websites')
-async function fetchArticlesFromWebsite(website, category) {
-    const {
-        url,
-        articleSelector,
-        titleSelector,
-        contentSelector,
-        timeSelector,
-        imageSelector
-    } = websites[website][category];
-    const articles = [];
+
+const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
+const titleSelectors = ['h1', 'h2', 'h3', '.title', '.article-title', '.entry-title']
+const articleSelectors = ['div.articletext', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext']
+const timeSelectors = ['time', '.time', '.date']
+const imageSelectors = ['img', 'picture', '.image', '.img']
+
+async function fetchArticlesFromWebsites() {
+    const articlesByWebsite = {};
 
     try {
+        console.log("STARTED FETCHING..")
         const browser = await chromium.launch();
         const context = await browser.newContext();
         const page = await context.newPage();
 
-        await page.goto(url, {waitUntil: 'domcontentloaded'});
+        for (const website of websites) {
+            console.log("NOW FETCHING WEBPAGE : ", website)
+            const articles = {};
 
-        const articleLinks = await page.$$eval(articleSelector, links => links.map(link => link.href));
+            for (const category in website.categories) {
+                await page.goto(website.categories[category], {waitUntil: 'domcontentloaded'});
+                // const articleLinks = await page.$$eval('h3 a', links => links.map(link => link.href));
+                let articleLinks = []
+                for (const startingSelector of startingArticleLinks){
+                    const selector = `${startingSelector} a`
+                    articleLinks = await page.$$eval(selector, links => links.map(link => link.href))
 
-        // Scrape up to 10 articles
-        for (let i = 0; i < Math.min(articleLinks.length, 10); i++) {
-            const articleUrl = articleLinks[i];
-            const articleData = await scrapeArticle(page, articleUrl, titleSelector, contentSelector, timeSelector, imageSelector);
-            articles.push(articleData);
+                    if (articleLinks.length > 0){
+                        break
+                    }
+                }
+                articles[category] = [];
+
+                for (let i = 0; i < Math.min(articleLinks.length, 10); i++) {
+                    const articleData = await scrapeArticle(page, articleLinks[i]);
+                    articles[category].push(articleData);
+                }
+            }
+
+            articlesByWebsite[website.name] = articles;
         }
 
         await browser.close();
+        console.log("FINISHED FETCHING")
     } catch (error) {
         console.error('Error fetching articles:', error);
     }
 
-    return articles;
+    return articlesByWebsite;
 }
 
-async function scrapeArticle(page, url, titleSelector, contentSelector, timeSelector, imageSelector) {
+async function scrapeArticle(page, articleUrl) {
+    const articleData = {
+        title: '',
+        content: '',
+        time: '',
+        image: '',
+        source: '',
+    };
+
     try {
-        if (url) {
-            await page.goto(url, {waitUntil: 'domcontentloaded'});
+        if (articleUrl) {
+            await page.goto(articleUrl, {waitUntil: 'domcontentloaded'});
 
-            const title = await page.$eval(titleSelector, titleElement => titleElement.textContent.trim());
-
-            const image = await page.$eval(imageSelector, (imageElement) => imageElement ? imageElement.src : null);
-
-            // Check if og:site_name is present within a small timeout, otherwise set a default value
-            let source = 'Unknown Source';
-            try {
-                source = await Promise.race([
-                    page.$eval('meta[property="og:site_name"]', metaElement => metaElement?.content),
-                    page.waitForTimeout(50) // Wait for 50 milliseconds
-                ]);
-            } catch (timeoutError) {
-                // Handle timeout error, use the default value
-                // console.log(timeoutError)
+            for (const selector of titleSelectors) {
+                articleData.title = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
+                if (articleData.title) break;
             }
 
-            const timeElement = await page.$(timeSelector);
-            let date;
-            if (timeElement) {
-                date = await page.$eval(timeSelector, timeElement => timeElement.textContent.trim());
-            } else {
-                // If timeElement doesn't exist, use the current date and time
-                console.log("I had to change the time on this one bro")
-                date = new Date().toISOString();
-            }
-            //const date = await page.$eval(timeSelector, timeElement => timeElement.textContent.trim());
-
-            // Wait for the content element to be present on the page, with a longer timeout
-            const contentElements = await page.$$(contentSelector);
-
-            // Extract text content from all specified tags within each content element
-            const contentTags = ['p', 'ul', 'li']; // Add more tags as needed
-            const content = [];
-
-            for (const element of contentElements) {
-                for (const tag of contentTags) {
-                    const tagElements = await element.$$(`${tag}`);
-
-                    for (const tagElement of tagElements) {
-                        const tagText = await tagElement.textContent();
-                        content.push(tagText.trim());
-                    }
+            for (const selector of articleSelectors) {
+                articleData.content = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
+                if (articleData.content) {
+                    articleData.content = articleData.content.replace(/\n/g, '').replace(/\t/g, '');
+                    break;
                 }
             }
 
-            // Join content into a single string
-            const articleContent = content.join(' ');
+            for (const selector of timeSelectors) {
+                articleData.time = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
+                if (articleData.time) break;
+            }
 
-            return {
-                title,
-                article: articleContent.trim(),
-                date,
-                source,
-                image
-            };
-        } else {
-            console.error('URL is undefined for the article. Skipping.');
-            return {};
+            for (const selector of imageSelectors) {
+                articleData.image = await page.$eval(selector, el => el.getAttribute('src')).catch(() => '');
+                if (articleData.image) break;
+            }
+
+            articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
         }
     } catch (error) {
         console.error('Error scraping article:', error);
-        return {};
     }
+
+    return articleData;
 }
 
-module.exports = {fetchArticlesFromWebsite, scrapeArticle}
+module.exports = {fetchArticlesFromWebsites}

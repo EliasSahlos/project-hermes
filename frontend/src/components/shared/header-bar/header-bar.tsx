@@ -1,19 +1,19 @@
 'use client'
 import Link from "next/link"
-import { navMenuData } from "@/components/shared/header-bar/nav-menu-paths"
+import { navMenuData } from "@/components/shared/header-bar/nav-menu-routes"
 import { useState } from "react"
 import Hamburger from "hamburger-react"
 import SearchIcon from '@mui/icons-material/Search';
 import NavMenu from "@/components/shared/header-bar/nav-menu";
 
 function HeaderBar() {
-    const [isHamburgerOpen, setIsHamburgerOpen] = useState(false)
-    const [navMenuIsOpen, setNavMenuIsOpen] = useState(false)
+    const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
+    const [navMenuIsOpen, setNavMenuIsOpen] = useState<boolean>(false)
 
     const isLoggedIn: boolean = true
-    const unregisteredUserMenuData = navMenuData.filter((item) => !item.requiresAuth)
-    const registeredUserMenuData = navMenuData.filter((item) => item.requiresAuth)
-    const userMenu = isLoggedIn ? registeredUserMenuData : unregisteredUserMenuData
+    const unregisteredUserMenuData: typeof navMenuData = navMenuData.filter((item) => !item.requiresAuth)
+    const registeredUserMenuData: typeof navMenuData = navMenuData.filter((item) => item.requiresAuth)
+    const userMenu: typeof navMenuData = isLoggedIn ? registeredUserMenuData : unregisteredUserMenuData
 
     function hamburgerClickHandler(): void {
         setNavMenuIsOpen(!navMenuIsOpen)

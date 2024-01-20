@@ -1,3 +1,5 @@
+import { url } from "inspector"
+
 type navMenuData = {
     title: string
     url?: string
@@ -7,7 +9,7 @@ type navMenuData = {
 export const navMenuData: navMenuData[] = [
     {
         title: 'Feed',
-        url: '/',
+        url: '/feed',
         requiresAuth: true
     },
     {
@@ -26,7 +28,13 @@ export const navMenuData: navMenuData[] = [
         requiresAuth: false
     },
     {
+        title: 'Register',
+        url: '/register',
+        requiresAuth: false
+    },
+    {
         title: 'Log Out',
+        url: '/logout',
         requiresAuth: true
     },
 ]

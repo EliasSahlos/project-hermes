@@ -1,4 +1,4 @@
-import {navMenuData} from "@/components/shared/header-bar/nav-menu-routes";
+import { navMenuData } from "@/components/shared/header-bar/nav-menu-routes";
 import Link from "next/link";
 
 function NavMenu() {

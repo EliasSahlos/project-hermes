@@ -1,9 +1,9 @@
-const {chromium} = require("playwright");
+const { chromium } = require("playwright");
 const websites = require('./websites')
 
 const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
-const titleSelectors = ['.entry-title', '.article-title', '.itemTitle', '.title', 'h1', 'h2', 'h3']
-const articleSelectors = ['div.articletext', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext','div.td-post-content']
+const titleSelectors = ['.entry-title', '.article-title', '.article__title', '.headline', '.itemTitle', '.title', 'h1', 'h2', 'h3']
+const articleSelectors = ['div.articletext', 'div.article', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext', 'div.td-post-content', 'div.article__body', '.cntTxt']
 const timeSelectors = ['.time', '.date', 'time']
 const imageSelectors = ['.image', '.img', 'img', 'picture']
 
@@ -21,14 +21,14 @@ async function fetchArticlesFromWebsites() {
             const articles = {};
 
             for (const category in website.categories) {
-                await page.goto(website.categories[category], {waitUntil: 'domcontentloaded'});
+                await page.goto(website.categories[category], { waitUntil: 'domcontentloaded' });
                 // const articleLinks = await page.$$eval('h3 a', links => links.map(link => link.href));
                 let articleLinks = []
-                for (const startingSelector of startingArticleLinks){
+                for (const startingSelector of startingArticleLinks) {
                     const selector = `${startingSelector} a`
                     articleLinks = await page.$$eval(selector, links => links.map(link => link.href))
 
-                    if (articleLinks.length > 0){
+                    if (articleLinks.length > 0) {
                         break
                     }
                 }
@@ -63,7 +63,7 @@ async function scrapeArticle(page, articleUrl) {
 
     try {
         if (articleUrl) {
-            await page.goto(articleUrl, {waitUntil: 'domcontentloaded'});
+            await page.goto(articleUrl, { waitUntil: 'domcontentloaded' });
 
             for (const selector of titleSelectors) {
                 articleData.title = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
@@ -85,7 +85,7 @@ async function scrapeArticle(page, articleUrl) {
                     foundTimestamp = true
                     break;
                 }
-                if (!foundTimestamp){
+                if (!foundTimestamp) {
                     articleData.time = new Date().toISOString()
                 }
             }
@@ -104,4 +104,4 @@ async function scrapeArticle(page, articleUrl) {
     return articleData;
 }
 
-module.exports = {fetchArticlesFromWebsites}
+module.exports = { fetchArticlesFromWebsites }

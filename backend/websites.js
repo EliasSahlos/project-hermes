@@ -41,6 +41,13 @@ const websites = [
             economy: 'https://www.cnn.gr/oikonomia/chrima'
         }
     },
+    {
+        name: 'tromaktiko',
+        categories: {
+            politics: 'https://www.tromaktiko.gr/category/politiki/',
+            economy: 'https://www.tromaktiko.gr/category/ikonomia/'
+        }
+    },
 ]
 
 module.exports = websites;

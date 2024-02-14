@@ -3,7 +3,7 @@ const websites = require('./websites')
 
 const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
 const titleSelectors = ['.entry-title', '.article-title', '.itemTitle', '.title', 'h1', 'h2', 'h3']
-const articleSelectors = ['div.articletext', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext']
+const articleSelectors = ['div.articletext', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext','div.td-post-content']
 const timeSelectors = ['.time', '.date', 'time']
 const imageSelectors = ['.image', '.img', 'img', 'picture']
 

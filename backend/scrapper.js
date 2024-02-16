@@ -34,7 +34,7 @@ async function fetchArticlesFromWebsites() {
                 }
                 articles[category] = [];
 
-                for (let i = 0; i < Math.min(articleLinks.length, 10); i++) {
+                for (let i = 0; i < Math.min(articleLinks.length, 5); i++) {
                     const articleData = await scrapeArticle(page, articleLinks[i]);
                     articles[category].push(articleData);
                 }

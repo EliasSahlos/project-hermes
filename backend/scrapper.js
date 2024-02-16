@@ -54,6 +54,7 @@ async function fetchArticlesFromWebsites() {
 
 async function scrapeArticle(page, articleUrl) {
     const articleData = {
+        url: articleUrl,
         title: '',
         content: '',
         time: '',
@@ -103,5 +104,6 @@ async function scrapeArticle(page, articleUrl) {
 
     return articleData;
 }
+
 
 module.exports = { fetchArticlesFromWebsites }

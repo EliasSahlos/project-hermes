@@ -8,7 +8,7 @@ const timeSelectors = ['.time', '.date', 'time']
 const imageSelectors = ['.image', '.img', 'img', 'picture']
 
 async function fetchArticlesFromWebsites() {
-    const articlesByWebsite = {};
+    const articles = [];
 
     try {
         console.log("STARTED FETCHING..")
@@ -18,29 +18,24 @@ async function fetchArticlesFromWebsites() {
 
         for (const website of websites) {
             console.log("NOW FETCHING WEBPAGE : ", website)
-            const articles = {};
 
             for (const category in website.categories) {
                 await page.goto(website.categories[category], { waitUntil: 'domcontentloaded' });
-                // const articleLinks = await page.$$eval('h3 a', links => links.map(link => link.href));
-                let articleLinks = []
+                let articleLinks = [];
                 for (const startingSelector of startingArticleLinks) {
-                    const selector = `${startingSelector} a`
-                    articleLinks = await page.$$eval(selector, links => links.map(link => link.href))
+                    const selector = `${startingSelector} a`;
+                    articleLinks = await page.$$eval(selector, links => links.map(link => link.href));
 
                     if (articleLinks.length > 0) {
-                        break
+                        break;
                     }
                 }
-                articles[category] = [];
 
                 for (let i = 0; i < Math.min(articleLinks.length, 5); i++) {
                     const articleData = await scrapeArticle(page, articleLinks[i]);
-                    articles[category].push(articleData);
+                    articles.push(articleData); // Pushing articles into the array declared outside the loop
                 }
             }
-
-            articlesByWebsite[website.name] = articles;
         }
 
         await browser.close();
@@ -49,8 +44,9 @@ async function fetchArticlesFromWebsites() {
         console.error('Error fetching articles:', error);
     }
 
-    return articlesByWebsite;
+    return articles;
 }
+
 
 async function scrapeArticle(page, articleUrl) {
     const articleData = {

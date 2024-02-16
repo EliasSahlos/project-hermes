@@ -5,12 +5,15 @@ import Hamburger from "hamburger-react";
 import NavMenu from "@/components/shared/header-bar/nav-menu";
 import { useAuth } from "@/context/auth-context";
 import { navMenuData } from "@/components/shared/header-bar/nav-menu-routes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AppBar, Toolbar } from "@mui/material";
 
-function HeaderBar() {
+function Header() {
     const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false);
     const [navMenuIsOpen, setNavMenuIsOpen] = useState<boolean>(false);
-    const { isAuthenticated } = useAuth();
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+    const { isAuthenticated, login, logout } = useAuth();
 
     const unregisteredUserMenuData: typeof navMenuData = navMenuData.filter((item) => !item.requiresAuth);
     const registeredUserMenuData: typeof navMenuData = navMenuData.filter((item) => item.requiresAuth);
@@ -20,31 +23,35 @@ function HeaderBar() {
         setNavMenuIsOpen(!navMenuIsOpen);
     }
 
+    function onLinkClickHandler(): void {
+        setIsHamburgerOpen(false);
+        setNavMenuIsOpen(false)
+    }
+
     return (
-        <div className="flex justify-between items-center h-[50px] bg-[#D5B4E9]/80 backdrop-blur-lg shadow-md p-8">
-            <div className="flex flex-1">
-                <h1 className="hidden md:block text-2xl cursor-pointer">
-                    <Link href={isAuthenticated ? '/feed' : '/'}>NewsApp</Link>
-                </h1>
-                <div className="flex md:hidden hover:cursor-pointer hover:scale-110 ease-in duration-200 z-50">
-                    <SearchIcon />
+        <AppBar style={{ backgroundColor: '#D5B4E9' }}>
+            <Toolbar>
+                <div className="flex flex-1">
+                    <h1 className="md:block text-2xl text-black cursor-pointer">
+                        <Link href={isAuthenticated ? '/feed' : '/'}>Hermes</Link>
+                    </h1>
                 </div>
-            </div>
-            {/* Desktop Navigation Menu */}
-            <div className="hidden md:flex">
-                {userMenu.map((menuItem) => (
-                    <ul className="px-4 cursor-pointer hover:scale-110 ease-in duration-200" key={menuItem.title}>
-                        {menuItem.url ? <Link href={menuItem.url}>{menuItem.title}</Link> : <h1>{menuItem.title}</h1>}
-                    </ul>
-                ))}
-            </div>
-            {/* Mobile Navigation Menu */}
-            <div className="flex md:hidden hover:scale-110 ease-in duration-200 z-50" onClick={hamburgerClickHandler}>
-                <Hamburger size={22} toggled={isHamburgerOpen} toggle={setIsHamburgerOpen} />
-            </div>
-            {navMenuIsOpen && <NavMenu />}
-        </div>
-    );
+                {/* Desktop Navigation Menu */}
+                <div className="hidden md:flex">
+                    {userMenu.map((menuItem) => (
+                        <ul className="px-4 text-black cursor-pointer hover:scale-110 ease-in duration-200" key={menuItem.title}>
+                            {menuItem.url ? <Link href={menuItem.url}>{menuItem.title}</Link> : <h1>{menuItem.title}</h1>}
+                        </ul>
+                    ))}
+                </div>
+                {/* Mobile Navigation Menu */}
+                <div className="flex text-black md:hidden z-50" onClick={hamburgerClickHandler}>
+                    <Hamburger size={22} toggled={isHamburgerOpen} toggle={setIsHamburgerOpen} />
+                </div>
+                {navMenuIsOpen && <div className="flex md:hidden"><NavMenu userMenu={userMenu} onLinkClick={onLinkClickHandler} /></div>}
+            </Toolbar>
+        </AppBar>
+    )
 }
 
-export default HeaderBar;
+export default Header

@@ -1,5 +1,6 @@
 'use client'
-import Spinner from "@/components/shared/spinner/spinner"
+
+import SpinnerLoading from "@/components/shared/spinner-loading/spinner-loading"
 import { useAuth } from "@/context/auth-context"
 import { useEffect, useState } from "react"
 
@@ -19,7 +20,7 @@ function logoutPage() {
 
     return (
         <>
-            {isLoading && <Spinner />}
+            {isLoading && <SpinnerLoading />}
         </>
     )
 }

@@ -1,9 +1,9 @@
 import { CircularProgress } from "@mui/material";
 
-function Spinner() {
+function SpinnerLoading() {
     return (
         <div className="flex justify-center items-center"><CircularProgress color="inherit" /></div>
     )
 }
 
-export default Spinner
+export default SpinnerLoading

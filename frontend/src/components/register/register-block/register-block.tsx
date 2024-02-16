@@ -1,6 +1,6 @@
 'use client'
-import Spinner from "@/components/shared/spinner/spinner"
-import { Checkbox, TextField } from "@mui/material"
+import LinearLoading from "@/components/shared/linear-loading/linear-loading"
+import { Checkbox, LinearProgress, TextField } from "@mui/material"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -82,11 +82,11 @@ function RegisterBlock() {
 
     return (
         <div className="flex flex-col justify-center items-center w-[80%] lg:w-[40%] p border-2 p-8 shadow-lg rounded">
-            {loading && <Spinner />}
+            {loading && <LinearLoading />}
             {!loading && (
                 <div>
                     <div className="mb-8">
-                        <h1 className="font-semibold text-4xl">Register</h1>
+                        <h1 className="font-semibold text-center text-4xl">Register</h1>
                     </div>
                     <form onSubmit={registerFormSubmitHandler}>
                         <div>
@@ -126,7 +126,7 @@ function RegisterBlock() {
                         <div>
                             {/* <input className="cursor-pointer" type="checkbox" onChange={termsCheckboxHandler} checked={termsChecked} /> */}
                             <Checkbox value={termsChecked} onChange={termsCheckboxHandler} />
-                            <label className="mx-2">I agree the terms and privacy policy</label>
+                            <label className="mx-1 text-sm">I agree the terms and privacy policy</label>
                         </div>
                         <div className="mt-8 flex justify-center items-center">
                             {isSubmitEnabled && (

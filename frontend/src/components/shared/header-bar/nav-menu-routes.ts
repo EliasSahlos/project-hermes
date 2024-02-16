@@ -1,6 +1,4 @@
-import { url } from "inspector"
-
-type navMenuData = {
+export interface navMenuData {
     title: string
     url?: string
     requiresAuth: boolean

@@ -2,7 +2,7 @@ const { chromium } = require("playwright");
 const websites = require('./websites')
 
 const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
-const titleSelectors = ['.entry-title', '.article-title', '.article__title', '.headline', '.itemTitle', '.title', 'h1', 'h2', 'h3']
+const titleSelectors = ['h1.fw-headline', '.entry-title', '.article-title', '.article__title', '.headline', '.itemTitle', '.title', 'h1', 'h2', 'h3']
 const articleSelectors = ['div.articletext', 'div.article', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext', 'div.td-post-content', 'div.article__body', '.cntTxt']
 const timeSelectors = ['.time', '.date', 'time']
 const imageSelectors = ['.image', '.img', 'img', 'picture']
@@ -31,7 +31,7 @@ async function fetchArticlesFromWebsites() {
                     }
                 }
 
-                for (let i = 0; i < Math.min(articleLinks.length, 5); i++) {
+                for (let i = 0; i < Math.min(articleLinks.length, 1); i++) {
                     const articleData = await scrapeArticle(page, articleLinks[i]);
                     articles.push(articleData); // Pushing articles into the array declared outside the loop
                 }

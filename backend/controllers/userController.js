@@ -39,7 +39,7 @@ async function registerUser(req, res) {
         };
         const insertedUser = await users.insertOne(newUser);
 
-        const token = jwt.sign({ id: insertedUser.insertedId }, JWT_SECRET, { expiresIn: '1h' }) //JWT Token
+        const token = jwt.sign({ id: insertedUser.insertedId }, JWT_SECRET, { expiresIn: '72h' }) //JWT Token
         return res.status(200).json({ success: true, message: "User registered successfully!", insertedUser, token })
     } catch (error) {
         console.log(error);
@@ -72,7 +72,7 @@ async function loginUser(req, res) {
             return res.status(401).json({ success: false, message: 'Invalid password. Please try again!' })
         }
 
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' })
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '72h' })
         return res.status(200).json({ success: true, message: 'Login successful', token })
     } catch (error) {
         console.error(error)

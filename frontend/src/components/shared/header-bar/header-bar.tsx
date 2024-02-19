@@ -29,7 +29,7 @@ function Header() {
     }
 
     return (
-        <AppBar style={{ backgroundColor: '#D5B4E9' }}>
+        <AppBar style={{ backgroundColor: 'rgba(213, 180, 233, 0.6)', backdropFilter: "blur(20px)" }}>
             <Toolbar>
                 <div className="flex flex-1">
                     <h1 className="md:block text-2xl text-black cursor-pointer">

@@ -1,11 +1,11 @@
-const { chromium } = require("playwright");
+const {chromium} = require("playwright");
 const websites = require('./websites')
 
 const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
 const titleSelectors = ['h1.fw-headline', '.entry-title', '.article-title', '.article__title', '.headline', '.itemTitle', '.title', 'h1', 'h2', 'h3']
 const articleSelectors = ['div.articletext', 'div.article', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext', 'div.td-post-content', 'div.article__body', '.cntTxt']
 const timeSelectors = ['.time', '.date', 'time']
-const imageSelectors = ['.image', '.img', 'img', 'picture']
+// const imageSelectors = ['.image', '.img', 'img', 'picture']
 
 async function fetchArticlesFromWebsites() {
     const articles = [];
@@ -20,7 +20,7 @@ async function fetchArticlesFromWebsites() {
             console.log("NOW FETCHING WEBPAGE : ", website)
 
             for (const category in website.categories) {
-                await page.goto(website.categories[category], { waitUntil: 'domcontentloaded' });
+                await page.goto(website.categories[category], {waitUntil: 'domcontentloaded'});
                 let articleLinks = [];
                 for (const startingSelector of startingArticleLinks) {
                     const selector = `${startingSelector} a`;
@@ -31,7 +31,7 @@ async function fetchArticlesFromWebsites() {
                     }
                 }
 
-                for (let i = 0; i < Math.min(articleLinks.length, 1); i++) {
+                for (let i = 0; i < Math.min(articleLinks.length, 5); i++) {
                     const articleData = await scrapeArticle(page, articleLinks[i]);
                     articles.push(articleData); // Pushing articles into the array declared outside the loop
                 }
@@ -60,7 +60,7 @@ async function scrapeArticle(page, articleUrl) {
 
     try {
         if (articleUrl) {
-            await page.goto(articleUrl, { waitUntil: 'domcontentloaded' });
+            await page.goto(articleUrl, {waitUntil: 'domcontentloaded'});
 
             for (const selector of titleSelectors) {
                 articleData.title = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
@@ -87,10 +87,26 @@ async function scrapeArticle(page, articleUrl) {
                 }
             }
 
-            for (const selector of imageSelectors) {
-                articleData.image = await page.$eval(selector, el => el.getAttribute('src')).catch(() => '');
-                if (articleData.image) break;
+            // for (const selector of imageSelectors) {
+            //     articleData.image = await page.$eval(selector, el => el.getAttribute('src')).catch(() => '');
+            //     if (articleData.image) break;
+            // }
+
+
+            const images = await page.$$eval('img', imgs => imgs.map(img => ({
+                src: img.getAttribute('src'),
+                alt: img.getAttribute('alt')
+            })));
+
+            for (const img of images) {
+                const excludedWords = ['logo', 'svg', 'avatar', 'profile', 'profiles', 'webp', 'gif'];
+                const shouldExclude = excludedWords.some(word => img.src.includes(word) || (img.alt && img.alt.includes(word)));
+                if (!shouldExclude) {
+                    articleData.image = img.src;
+                    break;
+                }
             }
+
 
             articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
         }
@@ -102,4 +118,4 @@ async function scrapeArticle(page, articleUrl) {
 }
 
 
-module.exports = { fetchArticlesFromWebsites }
+module.exports = {fetchArticlesFromWebsites}

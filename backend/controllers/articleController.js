@@ -1,13 +1,70 @@
 const scraper = require('../scrapper')
+const { MongoClient } = require('mongodb')
+const { v4: uuidv4 } = require('uuid')
+require('dotenv').config()
 
-async function getArticles(req, res) {
+const uri = process.env.MONGO_ATLAS_URI
+
+async function scrapeArticles(req, res) {
+    const client = new MongoClient(uri)
     try {
+        //Scrape articles
         const articles = await scraper.fetchArticlesFromWebsites()
-        res.json({success: true, articles})
+
+        // Connects to Database
+        await client.connect()
+        const db = client.db('app-data')
+        const articlesCollection = db.collection('articles')
+
+        //Insert each article to database
+        let newArticlesCounter = 0
+        let newArticlesArr = []
+        console.log('Inserting articles to database...')
+        for (const article of articles) {
+            //Check if article already exists in database
+            const existingArticle = await articlesCollection.findOne({ url: article.url })
+            if (!existingArticle) {
+                const newArticle = {
+                    url: article.url,
+                    title: article.title,
+                    content: article.content,
+                    time: article.time,
+                    image: article.image,
+                    source: article.source,
+                    views: 0,
+                }
+                await articlesCollection.insertOne(newArticle)
+                newArticlesArr.push(newArticle.title)
+                newArticlesCounter++
+            }
+        }
+        console.log("New articles array: ", newArticlesArr, "Articles added:", newArticlesCounter,)
+        res.status(200).json({ message: 'Articles scraped and inserted into database successfully!', articles })
     } catch (error) {
-        console.error('Error fetching articles')
-        res.status(500).json({success: false,message: 'Failed to fetch articles'})
+        console.error(error)
+        res.status(500).json({ message: 'Failed to fetch articles. Please try again!' })
+    } finally {
+        await client.close()
     }
 }
 
-module.exports = {getArticles}
+async function getAllArticles(req, res) {
+    const client = new MongoClient(uri)
+    try {
+        // Connects to Database
+        await client.connect()
+        const db = client.db('app-data')
+        const articlesCollection = db.collection('articles')
+
+        const articles = await articlesCollection.find({}).toArray()
+
+        res.status(200).json({ message: 'Articles fetched successfully', articles })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Failed to fetch articles. Please try again!' })
+    } finally {
+        await client.close()
+    }
+}
+
+module.exports = { scrapeArticles, getAllArticles }

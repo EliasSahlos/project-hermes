@@ -3,7 +3,7 @@ import { ReactNode, createContext, useContext, useState } from "react"
 
 interface PaginationContextProps {
     currentPage: number
-    setCurrentPage: (page:number) => void
+    setCurrentPage: (page: number) => void
     currentPosts: Article[]
     pages: number
 }
@@ -21,7 +21,7 @@ export function PaginationProvider({ children, articles }: { children: ReactNode
     let pages = Math.ceil(articles.length / postsPerPage)
 
 
-    const contextValues: any = {
+    const contextValues: PaginationContextProps = {
         currentPage,
         setCurrentPage,
         currentPosts,

@@ -22,6 +22,8 @@ async function fetchArticlesFromWebsites() {
             for (const category in website.categories) {
                 await page.goto(website.categories[category], {waitUntil: 'domcontentloaded'});
                 let articleLinks = [];
+
+                //Fetch websites url
                 for (const startingSelector of startingArticleLinks) {
                     const selector = `${startingSelector} a`;
                     articleLinks = await page.$$eval(selector, links => links.map(link => link.href));
@@ -62,11 +64,13 @@ async function scrapeArticle(page, articleUrl) {
         if (articleUrl) {
             await page.goto(articleUrl, {waitUntil: 'domcontentloaded'});
 
+            //Fetch Title
             for (const selector of titleSelectors) {
                 articleData.title = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
                 if (articleData.title) break;
             }
 
+            //Fetch Article
             for (const selector of articleSelectors) {
                 articleData.content = await page.$eval(selector, el => el.textContent.trim()).catch(() => '');
                 if (articleData.content) {
@@ -74,7 +78,7 @@ async function scrapeArticle(page, articleUrl) {
                     break;
                 }
             }
-
+            //Fetch Time
             let foundTimestamp = false
             for (const selector of timeSelectors) {
                 articleData.time = await page.$eval(selector, el => el.getAttribute('datetime')).catch(() => '');
@@ -92,7 +96,7 @@ async function scrapeArticle(page, articleUrl) {
             //     if (articleData.image) break;
             // }
 
-
+            //Fetch Image
             const images = await page.$$eval('img', imgs => imgs.map(img => ({
                 src: img.getAttribute('src'),
                 alt: img.getAttribute('alt')

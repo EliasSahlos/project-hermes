@@ -45,6 +45,7 @@ function LoginBlock() {
 
             setEmail('');
             setPassword('');
+            router.push('/feed')
         } catch (error: any) {
             console.error(error);
             if (error.response.data.message) {

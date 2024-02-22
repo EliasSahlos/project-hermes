@@ -12,7 +12,7 @@ const PaginationContext = createContext<PaginationContextProps | undefined>(unde
 
 export function PaginationProvider({ children, articles }: { children: ReactNode, articles: Article[] }) {
     const [currentPage, setCurrentPage] = useState<number>(1)
-    const [postsPerPage, setPostsPerPage] = useState<number>(30)
+    const [postsPerPage, setPostsPerPage] = useState<number>(24)
 
     const lastPostIndex = currentPage * postsPerPage
     const firstPostIndex = lastPostIndex - postsPerPage

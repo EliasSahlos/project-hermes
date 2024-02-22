@@ -6,6 +6,7 @@ function PaginationBlock() {
 
     function changePageHandler(event: any, page: number) {
         setCurrentPage(page)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     return (

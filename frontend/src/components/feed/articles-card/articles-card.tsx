@@ -3,6 +3,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { usePagination } from "@/context/pagination-context";
 import { useAuth } from "@/context/auth-context";
+import Image from "next/image";
 
 function ArticlesCard() {
     const { currentPosts } = usePagination()
@@ -11,14 +12,15 @@ function ArticlesCard() {
         <div>
             <div className="flex justify-center items-center md:px-6">
                 <section className="mb-6">
-                    <div className="grid gap-6 lg:grid-cols-3">
+                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {currentPosts.map((article, index) => (
                             <div
                                 key={index}
-                                className="relative h-[250px] rounded overflow-hidden"
+                                className="relative h-[270px] rounded overflow-hidden"
                             >
                                 <img
                                     src={article.image}
+                                    alt='broken-img'
                                     className="w-full h-full bg-cover"
                                 />
                                 <div className="absolute top-0 left-0 w-full h-[12%] bg-white/30 backdrop-blur-lg z-50">

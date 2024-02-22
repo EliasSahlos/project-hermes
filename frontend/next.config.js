@@ -4,8 +4,10 @@ const nextConfig = {}
 module.exports = {
     images: {
         domains: [
+            'www.newsit.gr',
             'www.enikos.gr',
             'www.reporter.gr',
+            'www.kathimerini.gr',
             'cdn.bbmd.gr',
             'cdn.cnngreece.gr',
             'www.tromaktiko.gr',

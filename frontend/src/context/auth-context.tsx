@@ -31,13 +31,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     function register(token: string) {
         localStorage.setItem('token', token);
         setIsAuthenticated(true);
-        router.push('/register/pick-sources')
     }
 
     function login(token: string) {
         localStorage.setItem('token', token);
         setIsAuthenticated(true);
-        router.push('/feed')
     }
 
     function logout() {

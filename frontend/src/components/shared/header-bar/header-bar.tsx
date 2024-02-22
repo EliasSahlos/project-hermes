@@ -11,13 +11,15 @@ import { AppBar, Toolbar } from "@mui/material";
 function Header() {
     const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false);
     const [navMenuIsOpen, setNavMenuIsOpen] = useState<boolean>(false);
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [userMenu, setUserMenu] = useState<navMenuData[]>([]);
+    const { isAuthenticated } = useAuth();
 
-    const { isAuthenticated, login, logout } = useAuth();
+    const unregisteredUserMenuData = navMenuData.filter(item => !item.requiresAuth);
+    const registeredUserMenuData = navMenuData.filter(item => item.requiresAuth);
 
-    const unregisteredUserMenuData: typeof navMenuData = navMenuData.filter((item) => !item.requiresAuth);
-    const registeredUserMenuData: typeof navMenuData = navMenuData.filter((item) => item.requiresAuth);
-    const userMenu: typeof navMenuData = isAuthenticated ? registeredUserMenuData : unregisteredUserMenuData;
+    useEffect(() => {
+        setUserMenu(isAuthenticated ? registeredUserMenuData : unregisteredUserMenuData);
+    }, [isAuthenticated]);
 
     function hamburgerClickHandler(): void {
         setNavMenuIsOpen(!navMenuIsOpen);
@@ -25,7 +27,7 @@ function Header() {
 
     function onLinkClickHandler(): void {
         setIsHamburgerOpen(false);
-        setNavMenuIsOpen(false)
+        setNavMenuIsOpen(false);
     }
 
     return (
@@ -51,7 +53,7 @@ function Header() {
                 {navMenuIsOpen && <div className="flex md:hidden"><NavMenu userMenu={userMenu} onLinkClick={onLinkClickHandler} /></div>}
             </Toolbar>
         </AppBar>
-    )
+    );
 }
 
-export default Header
+export default Header;

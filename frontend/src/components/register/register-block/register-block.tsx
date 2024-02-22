@@ -1,83 +1,86 @@
 'use client'
-import LinearLoading from "@/components/shared/linear-loading/linear-loading"
-import { Checkbox, LinearProgress, TextField } from "@mui/material"
-import axios from "axios"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useAuth } from "@/context/auth-context";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Checkbox, TextField } from "@mui/material";
+import LinearLoading from "@/components/shared/linear-loading/linear-loading";
+import ErrorAlert from "@/components/shared/alerts/error-alert/error-alert";
 
 function RegisterBlock() {
-    const [username, setUsername] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [retypePassword, setRetypePassword] = useState<string>('')
-    const [passwordMatch, setPasswordMatch] = useState<boolean>(true)
-    const [termsChecked, setTermsChecked] = useState<boolean>(false)
-    const [error, SetError] = useState<string>('')
-    const [loading, setLoading] = useState(false)
+    const [username, setUsername] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [retypePassword, setRetypePassword] = useState<string>('');
+    const [passwordMatch, setPasswordMatch] = useState<boolean>(true);
+    const [termsChecked, setTermsChecked] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const router = useRouter()
+    const router = useRouter();
+    const { login } = useAuth();
 
-    const isSubmitEnabled: boolean = username && email && password && retypePassword && passwordMatch && termsChecked ? true : false
+    const isSubmitEnabled: any = username && email && password && retypePassword && passwordMatch && termsChecked;
 
-    function usernameInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
-        setUsername(e.target.value)
+    function emailValidation(email: string): boolean {
+        const regex = /\S+@\S+\.\S+/;
+        return regex.test(email); //True if matches, False if not
     }
 
-    function emailInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
-        setEmail(e.target.value)
+    function usernameInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+        setUsername(e.target.value);
     }
 
-    function passwordInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
-        setPassword(e.target.value)
+    function emailInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+        setEmail(e.target.value);
+        if (!emailValidation(e.target.value)) {
+            setError('Please provide a valid email address');
+        } else {
+            setError('');
+        }
+    }
+
+    function passwordInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+        setPassword(e.target.value);
         if (e.target.value === retypePassword) {
-            setPasswordMatch(true)
+            setPasswordMatch(true);
         } else {
-            setPasswordMatch(false)
+            setPasswordMatch(false);
         }
     }
 
-    function retypePasswordInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
-        setRetypePassword(e.target.value)
+    function retypePasswordInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+        setRetypePassword(e.target.value);
         if (e.target.value === password) {
-            setPasswordMatch(true)
+            setPasswordMatch(true);
         } else {
-            setPasswordMatch(false)
+            setPasswordMatch(false);
         }
     }
 
-    function termsCheckboxHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    function termsCheckboxHandler(e: React.ChangeEvent<HTMLInputElement>): void {
         setTermsChecked(e.target.checked);
     }
 
-    async function registerFormSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault()
-        try {
-            if (isSubmitEnabled) {
-                setLoading(true)
-
-                //Send POST Request
-                const response = await axios.post('http://localhost:3001/api/users/register', { username, email, password });
-                console.log("Form submitted successfully", response.data);
-
-                //Extract and store token to localStorage
-                const token = response.data.token
-                localStorage.setItem('token', token)
-
-                //Clear previous outputs
-                setUsername('');
-                setEmail('');
-                setPassword('');
-                setRetypePassword('');
-                setTermsChecked(false);
-
-                router.push('/')
-            } else {
-                console.error("Invalid form submission")
-            }
-        } catch (error: any) {
-            console.error(error)
-            SetError(error)
+    function registerFormSubmitHandler(e: React.FormEvent<HTMLFormElement>): void {
+        e.preventDefault();
+        if (!isSubmitEnabled) {
+            setError('Please provide all the required fields');
+            return;
         }
+        setError('');
+        setLoading(true);
+        axios.post('http://localhost:3001/api/users/register', { username, email, password })
+            .then(response => {
+                console.log("User registered successfully", response.data);
+                login(response.data.token); // Update authentication status
+                router.push('/register/pick-sources');
+            })
+            .catch(error => {
+                console.error(error);
+                setError(error.response?.data?.message || 'Failed to register user');
+            })
+            .finally(() => setLoading(false));
     }
 
     return (
@@ -88,12 +91,13 @@ function RegisterBlock() {
                     <div className="mb-8">
                         <h1 className="font-semibold text-center text-4xl">Register</h1>
                     </div>
+                    {error && <ErrorAlert message={error} />}
                     <form onSubmit={registerFormSubmitHandler}>
                         <div>
                             <TextField
                                 className="w-[340px]"
                                 label="Username"
-                                defaultValue={username}
+                                value={username}
                                 onChange={usernameInputHandler}
                             />
                         </div>
@@ -101,15 +105,18 @@ function RegisterBlock() {
                             <TextField
                                 className="w-[340px]"
                                 label="Email"
-                                defaultValue={email}
+                                value={email}
                                 onChange={emailInputHandler}
+                                error={!!error}
+                                helperText={error || ''}
                             />
                         </div>
                         <div className="my-6">
                             <TextField
                                 className="w-[340px]"
                                 label="Password"
-                                defaultValue={password}
+                                type="password"
+                                value={password}
                                 onChange={passwordInputHandler}
                             />
                         </div>
@@ -117,34 +124,33 @@ function RegisterBlock() {
                             <TextField
                                 className="w-[340px]"
                                 label="Retype Password"
-                                defaultValue={retypePassword}
+                                type="password"
+                                value={retypePassword}
                                 onChange={retypePasswordInputHandler}
                                 error={!passwordMatch}
                                 helperText={!passwordMatch ? "Passwords do not match" : null}
                             />
                         </div>
                         <div>
-                            {/* <input className="cursor-pointer" type="checkbox" onChange={termsCheckboxHandler} checked={termsChecked} /> */}
-                            <Checkbox value={termsChecked} onChange={termsCheckboxHandler} />
-                            <label className="mx-1 text-sm">I agree the terms and privacy policy</label>
+                            <Checkbox
+                                value={termsChecked}
+                                onChange={termsCheckboxHandler}
+                            />
+                            <label className="mx-1 text-sm">I agree to the terms and privacy policy</label>
                         </div>
                         <div className="mt-8 flex justify-center items-center">
-                            {isSubmitEnabled && (
-                                <button className="bg-[#9354ba] text-white shadow-md rounded hover:bg-[#60377a] ease-in duration-200 p-4 ">
-                                    Click to Register
-                                </button>
-                            )}
-                            {!isSubmitEnabled && (
-                                <button disabled className="bg-[#dbc0ec] text-white shadow-md rounded p-4 cursor-not-allowed">
-                                    Click to Register
-                                </button>
-                            )}
+                            <button
+                                className="bg-[#9354ba] text-white shadow-md rounded hover:bg-[#60377a] ease-in duration-200 p-4"
+                                type="submit"
+                            >
+                                Click to Register
+                            </button>
                         </div>
                     </form>
                 </div>
             )}
         </div>
-    )
+    );
 }
 
-export default RegisterBlock
+export default RegisterBlock;

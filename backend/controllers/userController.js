@@ -9,8 +9,8 @@ const JWT_SECRET = uuidv4()
 
 // api/users/register
 async function registerUser(req, res) {
-    const { username, email, password } = req.body
-    if (!username || !email || !password) {
+    const { username, email, password, selectedSources } = req.body
+    if (!username || !email || !password || !selectedSources) {
         return res.status(400).json({ success: false, message: 'Please provide all the required fields' })
     }
     const client = new MongoClient(uri)
@@ -33,7 +33,7 @@ async function registerUser(req, res) {
             email: email.toLowerCase(),
             password: hashedPassword,
             isAdmin: false,
-            favouriteSources: [],
+            favouriteSources: selectedSources,
             bookmarkedArticles: []
         }
         const insertedUser = await usersCollection.insertOne(newUser)

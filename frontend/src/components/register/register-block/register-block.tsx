@@ -18,7 +18,6 @@ function RegisterBlock() {
     const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter();
-    const { login } = useAuth();
 
     const isSubmitEnabled: any = username && email && password && retypePassword && passwordMatch && termsChecked;
 
@@ -27,11 +26,11 @@ function RegisterBlock() {
         return regex.test(email); //True if matches, False if not
     }
 
-    function usernameInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+    function usernameInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setUsername(e.target.value);
     }
 
-    function emailInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+    function emailInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setEmail(e.target.value);
         if (!emailValidation(e.target.value)) {
             setError('Please provide a valid email address');
@@ -40,7 +39,7 @@ function RegisterBlock() {
         }
     }
 
-    function passwordInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+    function passwordInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setPassword(e.target.value);
         if (e.target.value === retypePassword) {
             setPasswordMatch(true);
@@ -49,7 +48,7 @@ function RegisterBlock() {
         }
     }
 
-    function retypePasswordInputHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+    function retypePasswordInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setRetypePassword(e.target.value);
         if (e.target.value === password) {
             setPasswordMatch(true);
@@ -58,11 +57,12 @@ function RegisterBlock() {
         }
     }
 
-    function termsCheckboxHandler(e: React.ChangeEvent<HTMLInputElement>): void {
+    function termsCheckboxHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setTermsChecked(e.target.checked);
     }
 
-    function registerFormSubmitHandler(e: React.FormEvent<HTMLFormElement>): void {
+    //TODO: Refactor it out of component
+    function registerFormSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!isSubmitEnabled) {
             setError('Please provide all the required fields');
@@ -70,17 +70,8 @@ function RegisterBlock() {
         }
         setError('');
         setLoading(true);
-        axios.post('http://localhost:3001/api/users/register', { username, email, password })
-            .then(response => {
-                console.log("User registered successfully", response.data);
-                login(response.data.token); // Update authentication status
-                router.push('/register/pick-sources');
-            })
-            .catch(error => {
-                console.error(error);
-                setError(error.response?.data?.message || 'Failed to register user');
-            })
-            .finally(() => setLoading(false));
+        localStorage.setItem('registrationData', JSON.stringify({ username, email, password }))
+        router.push('/register/pick-sources')
     }
 
     return (
@@ -140,10 +131,10 @@ function RegisterBlock() {
                         </div>
                         <div className="mt-8 flex justify-center items-center">
                             <button
-                                className="bg-[#9354ba] text-white shadow-md rounded hover:bg-[#60377a] ease-in duration-200 p-4"
+                                className="bg-[#9354ba] text-white shadow-md rounded hover:bg-[#60377a] ease-in duration-200 p-2"
                                 type="submit"
                             >
-                                Click to Register
+                                Pick favourite sources
                             </button>
                         </div>
                     </form>

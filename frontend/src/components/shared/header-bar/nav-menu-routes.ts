@@ -1,8 +1,4 @@
-export interface navMenuData {
-    title: string
-    url?: string
-    requiresAuth: boolean
-}
+
 
 export const navMenuData: navMenuData[] = [
     {

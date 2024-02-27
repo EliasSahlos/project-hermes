@@ -1,13 +1,6 @@
 'use client'
 import { ReactNode, createContext, useContext, useState } from "react"
 
-interface PaginationContextProps {
-    currentPage: number
-    setCurrentPage: (page: number) => void
-    currentPosts: Article[]
-    pages: number
-}
-
 const PaginationContext = createContext<PaginationContextProps | undefined>(undefined)
 
 export function PaginationProvider({ children, articles }: { children: ReactNode, articles: Article[] }) {

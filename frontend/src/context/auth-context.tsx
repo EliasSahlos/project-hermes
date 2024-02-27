@@ -2,13 +2,6 @@
 import { useRouter } from 'next/navigation';
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-interface AuthContextProps {
-    isAuthenticated: boolean;
-    register: (token: string) => void;
-    login: (token: string) => void;
-    logout: () => void;
-}
-
 // Create the authentication context
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 

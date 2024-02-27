@@ -1,11 +1,6 @@
 import { navMenuData } from "@/components/shared/header-bar/nav-menu-routes";
 import Link from "next/link";
 
-interface NavMenuProps {
-    onLinkClick: () => void;
-    userMenu: navMenuData[];
-}
-
 function NavMenu({ onLinkClick, userMenu }: NavMenuProps) {
     return (
         <div

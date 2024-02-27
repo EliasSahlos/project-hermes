@@ -34,7 +34,7 @@ function LoginBlock() {
     function passwordInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setPassword(e.target.value)
     }
-
+    
     async function loginFormSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         try {

@@ -4,7 +4,6 @@ import axios from "axios"
 import { PaginationProvider } from "@/context/pagination-context"
 import ArticlesCard from "@/components/feed/articles-card/articles-card"
 import PaginationBlock from "@/components/feed/pagination-block/pagination-block"
-import FeedTitle from "@/components/feed/feed-title/feed-title"
 import SpinnerLoading from "@/components/shared/spinner-loading/spinner-loading"
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
@@ -46,7 +45,9 @@ function FeedPage() {
             <div className="px-4">
                 <div className="flex justify-between items-center my-6 md:mx-7 2xl:mx-[400px]">
                     <div>
-                        <FeedTitle />
+                        <h1 className="inline-block text-5xl font-extrabold bg-gradient-to-r from-[#5B4EF0] to-[#D5B4E9] text-transparent bg-clip-text py-1">
+                            News Today
+                        </h1>
                     </div>
                     <div className="bg-purple-300/80 rounded shadow-md p-1 hover:scale-110 ease-in duration-200 cursor-pointer">
                         <FilterAltIcon fontSize="large" />
@@ -54,9 +55,11 @@ function FeedPage() {
                 </div>
                 {isLoading && <SpinnerLoading />}
                 {!isLoading && <ArticlesCard />}
-                <div className="flex justify-center items-center mb-8">
-                    <PaginationBlock />
-                </div>
+                {!isLoading &&
+                    <div className="flex justify-center items-center mb-8">
+                        <PaginationBlock />
+                    </div>
+                }
             </div>
         </PaginationProvider>
     )

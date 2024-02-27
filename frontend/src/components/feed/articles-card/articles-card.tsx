@@ -2,8 +2,6 @@ import Link from "next/link"
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { usePagination } from "@/context/pagination-context";
-import { useAuth } from "@/context/auth-context";
-import Image from "next/image";
 
 function ArticlesCard() {
     const { currentPosts } = usePagination()
@@ -11,7 +9,7 @@ function ArticlesCard() {
     return (
         <div>
             <div className="flex justify-center items-center md:px-6">
-                <section className="mb-6">
+                <div className="mb-6">
                     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {currentPosts.map((article, index) => (
                             <div
@@ -48,7 +46,7 @@ function ArticlesCard() {
                             </div>
                         ))}
                     </div>
-                </section>
+                </div>
             </div>
         </div>
     )

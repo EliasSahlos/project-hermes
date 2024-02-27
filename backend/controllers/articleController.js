@@ -1,4 +1,4 @@
-const scraper = require('../scrapper')
+const scraper = require('../scrapper/scrapper')
 const { MongoClient } = require('mongodb')
 const { v4: uuidv4 } = require('uuid')
 require('dotenv').config()

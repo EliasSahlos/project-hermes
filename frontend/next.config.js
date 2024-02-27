@@ -14,6 +14,8 @@ module.exports = {
             'www.enimerosi24.gr',
             'www.mononews.gr',
             'www.dealnews.gr',
+            'scontent.xx.fbcdn.net',
+            'scontent-sof1-2.xx.fbcdn.net',
         ]
     },
 }

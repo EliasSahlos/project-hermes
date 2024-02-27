@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb')
 const bcrypt = require('bcrypt')
 const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
@@ -7,13 +7,13 @@ require('dotenv').config()
 const uri = process.env.MONGO_ATLAS_URI
 const JWT_SECRET = uuidv4()
 
-// api/users/register
 async function registerUser(req, res) {
     const { username, email, password, selectedSources } = req.body
     if (!username || !email || !password || !selectedSources) {
         return res.status(400).json({ success: false, message: 'Please provide all the required fields' })
     }
     const client = new MongoClient(uri)
+
     try {
         // Connects to Database
         await client.connect()
@@ -48,7 +48,6 @@ async function registerUser(req, res) {
     }
 }
 
-// api/users/login
 async function loginUser(req, res) {
     const { email, password } = req.body
     if (!email || !password) {
@@ -81,9 +80,9 @@ async function loginUser(req, res) {
     }
 }
 
-// api/users/all
 async function getAllUsers(req, res) {
     const client = new MongoClient(uri)
+
     try {
         //Connects to Database
         await client.connect()
@@ -102,4 +101,29 @@ async function getAllUsers(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser, getAllUsers }
+async function getUserById(req, res) {
+    const { userId } = req.params
+    const client = new MongoClient(uri)
+
+    try {
+        //Connects to Database
+        await client.connect()
+        const db = client.db('app-data')
+        const usersCollection = db.collection('users')
+
+        //Find user by ID
+        const user = await usersCollection.findOne({ _id: new ObjectId(userId) })
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' })
+        }
+
+        return res.status(200).json({ success: true, user })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ success: false, message: 'Failed to fetch user.' })
+    } finally {
+        await client.close()
+    }
+}
+
+module.exports = { registerUser, loginUser, getAllUsers, getUserById }

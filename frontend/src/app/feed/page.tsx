@@ -6,25 +6,36 @@ import ArticlesCard from "@/components/feed/articles-card/articles-card"
 import PaginationBlock from "@/components/feed/pagination-block/pagination-block"
 import SpinnerLoading from "@/components/shared/spinner-loading/spinner-loading"
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { useAuth } from "@/context/auth-context"
 
 function FeedPage() {
     const [articles, setArticles] = useState<Article[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    const { userInfo } = useAuth()
+  
     useEffect(() => {
         fetchData()
     }, [])
 
+    
     async function fetchData() {
         try {
             const storedData = localStorage.getItem('storedArticles')
             if (storedData) {
-                const retrievedArray = JSON.parse(storedData)
-                setArticles(retrievedArray)
-                setIsLoading(false)
+                const { data, expired } = checkCacheExpiration(storedData)
+                if (!expired) {
+                    const retrievedArray = JSON.parse(storedData)
+                    setArticles(retrievedArray)
+                    setIsLoading(false)
+                    return;
+                } else {
+                    localStorage.removeItem('storedArticles')
+                }
             } else {
                 axios.get('http://localhost:3001/api/articles/all')
                     .then((response) => {
+
                         setArticles(response.data.articles);
                         localStorage.setItem('storedArticles', JSON.stringify(response.data.articles))
                         setIsLoading(false)
@@ -39,6 +50,14 @@ function FeedPage() {
             setIsLoading(false)
         }
     }
+
+    function checkCacheExpiration(cachedData: string) {
+        const { timestamp, data } = JSON.parse(cachedData)
+        const currentTime = new Date().getTime()
+        const expired = currentTime - timestamp > 900000; // 15 minutes in milliseconds
+        return { data, expired };
+    }
+
 
     return (
         <PaginationProvider articles={articles}>

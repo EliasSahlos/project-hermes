@@ -71,7 +71,7 @@ async function loginUser(req, res) {
         }
 
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '72h' })
-        return res.status(200).json({ message: 'Login successful', token })
+        return res.status(200).json({ message: 'Login successful', token, user })
     } catch (error) {
         console.error(error)
         return res.status(500).json({ message: 'Failed to login. Please try again!' })

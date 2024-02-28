@@ -8,6 +8,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 // Authentication provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [userInfo, setUserInfo] = useState([])
 
     const router = useRouter()
 
@@ -26,8 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAuthenticated(true);
     }
 
-    function login(token: string) {
+    function login(token: string, user: any) {
         localStorage.setItem('token', token);
+        setUserInfo(user)
         setIsAuthenticated(true);
     }
 
@@ -39,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const contextValue: AuthContextProps = {
         isAuthenticated,
+        userInfo,
         register,
         login,
         logout,

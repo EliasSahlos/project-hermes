@@ -31,6 +31,7 @@ async function scrapeArticles(req, res) {
                     time: article.time,
                     image: article.image,
                     source: article.source,
+                    category: article.category,
                     views: 0,
                 }
                 await articlesCollection.insertOne(newArticle)

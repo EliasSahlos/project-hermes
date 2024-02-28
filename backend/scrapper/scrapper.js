@@ -36,7 +36,7 @@ async function fetchArticlesFromWebsites() {
 
                 //Scraping articles from fetched URLs
                 for (let i = 0; i < Math.min(articleLinks.length, 5); i++) {
-                    const articleData = await scrapeArticle(page, articleLinks[i])
+                    const articleData = await scrapeArticle(page, articleLinks[i], category)
                     articles.push(articleData)
                 }
             }
@@ -52,7 +52,7 @@ async function fetchArticlesFromWebsites() {
 }
 
 
-async function scrapeArticle(page, articleUrl) {
+async function scrapeArticle(page, articleUrl, category) {
     // Object to store article data
     const articleData = {
         url: articleUrl,
@@ -61,6 +61,7 @@ async function scrapeArticle(page, articleUrl) {
         time: '',
         image: '',
         source: '',
+        category: category
     }
 
     try {
@@ -97,26 +98,6 @@ async function scrapeArticle(page, articleUrl) {
                 }
             }
 
-            // for (const selector of imageSelectors) {
-            //     articleData.image = await page.$eval(selector, el => el.getAttribute('src')).catch(() => '');
-            //     if (articleData.image) break;
-            // }
-
-            //Fetch image of the article
-            // const images = await page.$$eval('img', imgs => imgs.map(img => ({
-            //     src: img.getAttribute('src'),
-            //     alt: img.getAttribute('alt')
-            // })))
-            //
-            // for (const img of images) {
-            //     const excludedWords = ['logo', 'svg', 'avatar', 'profile', 'profiles', 'webp', 'gif']
-            //     const shouldExclude = excludedWords.some(word => img.src.includes(word) || (img.alt && img.alt.includes(word)))
-            //     if (!shouldExclude) {
-            //         articleData.image = img.src
-            //         break
-            //     }
-            // }
-            
             //Fetch source of the article
             articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
             if (!articleData.source) {

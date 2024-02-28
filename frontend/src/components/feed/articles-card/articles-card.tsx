@@ -5,7 +5,13 @@ import { usePagination } from "@/context/pagination-context";
 
 function ArticlesCard() {
     const { currentPosts } = usePagination()
-    
+
+    function formatDate(isoDate: string, locale: string = "en-US"): string {
+        const date: Date = new Date(isoDate)
+        const options: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", weekday: "long" }
+        return date.toLocaleDateString(locale, options)
+    }
+
     return (
         <div>
             <div className="flex justify-center items-center md:px-6">
@@ -36,7 +42,7 @@ function ArticlesCard() {
                                         <div className="m-6 text-white">
                                             <h5 className="mb-3 text-lg font-bold">{article.title}</h5>
                                             <p className="text-xs">
-                                                Published <u>{article.time}.</u>
+                                                Published <u>{formatDate(article.time)}.</u>
                                             </p>
                                         </div>
                                     </div>

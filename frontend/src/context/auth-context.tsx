@@ -20,6 +20,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         else {
             setIsAuthenticated(false)
         }
+
+        const savedUserInfo = localStorage.getItem('userInfo');
+        if (savedUserInfo) {
+            setUserInfo(JSON.parse(savedUserInfo));
+        }
     }, []);
 
     function register(token: string) {
@@ -29,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     function login(token: string, user: any) {
         localStorage.setItem('token', token);
+        localStorage.setItem('userInfo', JSON.stringify(user))
         setUserInfo(user)
         setIsAuthenticated(true);
     }

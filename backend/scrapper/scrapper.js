@@ -103,6 +103,32 @@ async function scrapeArticle(page, articleUrl) {
             // }
 
             //Fetch image of the article
+            // const images = await page.$$eval('img', imgs => imgs.map(img => ({
+            //     src: img.getAttribute('src'),
+            //     alt: img.getAttribute('alt')
+            // })))
+            //
+            // for (const img of images) {
+            //     const excludedWords = ['logo', 'svg', 'avatar', 'profile', 'profiles', 'webp', 'gif']
+            //     const shouldExclude = excludedWords.some(word => img.src.includes(word) || (img.alt && img.alt.includes(word)))
+            //     if (!shouldExclude) {
+            //         articleData.image = img.src
+            //         break
+            //     }
+            // }
+            
+            //Fetch source of the article
+            articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
+            if (!articleData.source) {
+                const urlParts = articleUrl.split('/');
+                if (urlParts.length >= 3) {
+                    articleData.source = urlParts[2];
+                } else {
+                    // If URL is not in the expected format, set source as Unknown
+                    articleData.source = 'Unknown';
+                }
+            }
+
             const images = await page.$$eval('img', imgs => imgs.map(img => ({
                 src: img.getAttribute('src'),
                 alt: img.getAttribute('alt')
@@ -112,13 +138,15 @@ async function scrapeArticle(page, articleUrl) {
                 const excludedWords = ['logo', 'svg', 'avatar', 'profile', 'profiles', 'webp', 'gif']
                 const shouldExclude = excludedWords.some(word => img.src.includes(word) || (img.alt && img.alt.includes(word)))
                 if (!shouldExclude) {
-                    articleData.image = img.src
-                    break
+                    if (img.src && !img.src.startsWith('https')) {
+                        // Modify the image URL if it doesn't start with 'https'
+                        articleData.image = `https://${articleData.source}${img.src}`;
+                    } else {
+                        articleData.image = img.src;
+                    }
+                    break;
                 }
             }
-            
-            //Fetch source of the article
-            articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
         }
     } catch (error) {
         console.error('Error scraping article:', error)

@@ -7,7 +7,8 @@ interface PaginationContextProps {
 
 interface AuthContextProps {
     isAuthenticated: boolean;
+    userInfo: any
     register: (token: string) => void;
-    login: (token: string) => void;
+    login: (token: string, user: any) => void;
     logout: () => void;
 }

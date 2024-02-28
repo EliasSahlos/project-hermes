@@ -75,7 +75,7 @@ function RegisterBlock() {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center w-[80%] lg:w-[40%] p border-2 p-8 shadow-lg rounded">
+        <div className="flex flex-col justify-center items-center w-[80%] lg:w-[40%] md:border-2 md:shadow-lg p-8 rounded">
             {loading && <LinearLoading />}
             {!loading && (
                 <div>

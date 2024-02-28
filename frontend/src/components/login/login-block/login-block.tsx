@@ -34,14 +34,14 @@ function LoginBlock() {
     function passwordInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setPassword(e.target.value)
     }
-    
+
     async function loginFormSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         try {
             setLoading(true);
             const response = await axios.post('http://localhost:3001/api/users/login', { email, password });
             console.log("User Logged in successfully", response.data);
-            login(response.data.token)
+            login(response.data.token,response.data.user)
 
             setEmail('');
             setPassword('');
@@ -56,7 +56,7 @@ function LoginBlock() {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center w-[80%] lg:w-[40%] 2xl:w-[20%] p border-2 p-8 shadow-lg rounded">
+        <div className="flex flex-col justify-center items-center w-[80%] lg:w-[40%] 2xl:w-[20%] md:border-2 md:shadow-lg p-8 rounded">
             {loading && <LinearLoading />}
             <div>
                 <div className="mb-8">

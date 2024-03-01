@@ -52,7 +52,7 @@ function PickSourcesPage() {
             axios.post('http://localhost:3001/api/users/register', { username, email, password, selectedSources })
                 .then(response => {
                     console.log("User registered successfully", response.data);
-                    login(response.data.token); // Update authentication status
+                    login(response.data.token, response.data.user); // Update authentication status
                     router.push('/feed')
                 })
                 .catch(error => {

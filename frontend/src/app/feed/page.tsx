@@ -13,12 +13,14 @@ function FeedPage() {
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const { userInfo } = useAuth()
-  
+
     useEffect(() => {
         fetchData()
     }, [])
 
-    
+    console.log("Articles when fetch:", articles);
+
+
     async function fetchData() {
         try {
             const storedData = localStorage.getItem('storedArticles')
@@ -58,10 +60,9 @@ function FeedPage() {
         return { data, expired };
     }
 
-
     return (
         <PaginationProvider articles={articles}>
-            <div className="px-4">
+            <div className="px-4 mt-20">
                 <div className="flex justify-between items-center my-6 md:mx-7 2xl:mx-[400px]">
                     <div>
                         <h1 className="inline-block text-5xl font-extrabold bg-gradient-to-r from-[#5B4EF0] to-[#D5B4E9] text-transparent bg-clip-text py-1">

@@ -17,7 +17,7 @@ export default function RootLayout({
             <body>
                 <AuthProvider>
                     <HeaderBar />
-                    <div className='mt-20 mb-2'>{children}</div>
+                    <div>{children}</div>
                 </AuthProvider>
             </body>
         </html>

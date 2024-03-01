@@ -4,8 +4,6 @@ import { DomainVerification } from "@mui/icons-material"
 
 function LoginPage() {
 
-    
-
     return (
         <div className="flex justify-center items-center mt-[150px]">
           <LoginBlock/>  

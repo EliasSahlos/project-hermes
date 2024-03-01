@@ -1,4 +1,6 @@
 interface Article {
+    _id: any
+    uuid: any
     url: string
     title: string
     content: string

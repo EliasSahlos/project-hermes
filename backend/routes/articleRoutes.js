@@ -5,6 +5,7 @@ const articleController = require('../controllers/articleController')
 // api/articles
 router.get('/scrape', articleController.scrapeArticles)
 router.get('/all', articleController.getAllArticles)
-router.get('/:id', articleController.getArticleById)
+router.get('/id/:id', articleController.getArticleById)
+router.get('/category/:category', articleController.getArticleByCategory)
 
 module.exports = router

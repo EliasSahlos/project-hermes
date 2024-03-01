@@ -11,7 +11,7 @@ async function scrapeArticles(req, res) {
         //Scrape articles
         const articles = await scraper.fetchArticlesFromWebsites()
 
-        articles.sort((a,b) => new Date(b.time) - new Date(a.time))
+        articles.sort((a, b) => new Date(b.time) - new Date(a.time))
 
         // Connects to Database
         await client.connect()
@@ -100,4 +100,32 @@ async function getArticleById(req, res) {
     }
 }
 
-module.exports = { scrapeArticles, getAllArticles, getArticleById }
+async function getArticleByCategory(req, res) {
+    const client = new MongoClient(uri)
+    try {
+        const { category } = req.params
+        console.log('Article Category:', category)
+
+        // Connects to Database
+        await client.connect()
+        const db = client.db('app-data')
+        const articlesCollection = db.collection('articles')
+
+        // Find the article by its ID
+        const articles = await articlesCollection.find({ category: category }).toArray()
+
+        if (!articles) {
+            return res.status(404).json({ message: 'Article not found' })
+        }
+
+        // Return the article
+        res.json(articles)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal Server Error' })
+    } finally {
+        await client.close()
+    }
+}
+
+module.exports = { scrapeArticles, getAllArticles, getArticleById, getArticleByCategory }

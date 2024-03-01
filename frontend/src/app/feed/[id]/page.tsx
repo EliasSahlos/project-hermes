@@ -19,7 +19,7 @@ function ArticleSinglePage() {
     async function fetchArticleById(articleId: any) {
         setIsLoading(true)
         try {
-            const response = await axios.get(`http://localhost:3001/api/articles/${articleId}`);
+            const response = await axios.get(`http://localhost:3001/api/articles/id/${articleId}`);
             setArticle(response.data);
             setIsLoading(false)
         } catch (error) {

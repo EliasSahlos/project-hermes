@@ -11,6 +11,8 @@ async function scrapeArticles(req, res) {
         //Scrape articles
         const articles = await scraper.fetchArticlesFromWebsites()
 
+        articles.sort((a,b) => new Date(b.time) - new Date(a.time))
+
         // Connects to Database
         await client.connect()
         const db = client.db('app-data')
@@ -33,6 +35,7 @@ async function scrapeArticles(req, res) {
                     time: article.time,
                     image: article.image,
                     source: article.source,
+                    category: article.category,
                     views: 0,
                 }
                 await articlesCollection.insertOne(newArticle)

@@ -7,6 +7,7 @@ interface Article {
     time: string
     image: string
     source: string
+    category: string
 }
 
 interface ArticlesProps {

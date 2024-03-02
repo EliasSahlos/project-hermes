@@ -6,6 +6,7 @@ import Image from "next/image";
 import SpinnerLoading from "@/components/shared/spinner-loading/spinner-loading";
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import { formatDate } from "@/app/formatDate";
+import Link from "next/link";
 
 function ArticleSinglePage() {
     const { id } = useParams();
@@ -38,11 +39,6 @@ function ArticleSinglePage() {
                         <span className="text-purple-500 font-bold mx-1">&gt;</span>
                         <h2 className="font-semibold text-sm capitalize"> {article?.category}</h2>
                     </div>
-                    <div className="flex justify-start my-1">
-                        <QueryBuilderIcon fontSize="small" />
-                        <h2 className="text-sm mx-2">{formatDate(article.time)}</h2>
-
-                    </div>
                     <div className="flex justify-center items-center">
                         <div>
                             <h1 className="text-3xl font-semibold text-justify">{article?.title}</h1>
@@ -51,12 +47,15 @@ function ArticleSinglePage() {
                     <div className="flex justify-center items-center mt-10">
                         {article?.image && <Image className="" src={article.image} alt="broken-article-img" width={800} height={700} />}
                     </div>
-                    <div className="flex flex-row mt-4">
-                        <div className="mx-4">
-                            {article?.time && formatDate(article.time)}
+                    <div className="flex flex-row justify-between items-center mt-4 border-b-2 p-2">
+                        <div className="flex justify-start my-1">
+                            <QueryBuilderIcon fontSize="small" />
+                            <h2 className="text-sm mx-2">{formatDate(article.time)}</h2>
                         </div>
-                        <div className="mx-4">
-                            {article?.source}
+                        <div className="bg-purple-200 p-1 rounded-md">
+                            <Link href={article.url} target="_blank">
+                                Read From Original Source
+                            </Link>
                         </div>
                     </div>
                     <div className="my-5">

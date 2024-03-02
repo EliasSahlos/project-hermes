@@ -16,6 +16,9 @@ module.exports = {
             'www.dealnews.gr',
             'scontent.xx.fbcdn.net',
             'scontent-sof1-2.xx.fbcdn.net',
+            'whyathens.com',
+            'img1.wsimg.com',
+            'i.pinimg.com',
         ]
     },
 }

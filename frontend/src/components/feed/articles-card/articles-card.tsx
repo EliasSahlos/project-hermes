@@ -11,7 +11,7 @@ function ArticlesCard() {
         <div>
             <div className="flex justify-center items-center md:px-6">
                 <div className="mb-6">
-                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-6 xl:grid-cols-3">
                         {currentPosts.map((article) => (
                             <div key={article.uuid} className="relative h-[270px] rounded overflow-hidden">
 

@@ -1,0 +1,3 @@
+interface FiltersBlockProps {
+    isFiltersOpen: boolean
+}

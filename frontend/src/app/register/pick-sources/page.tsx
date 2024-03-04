@@ -62,7 +62,7 @@ function PickSourcesPage() {
         }
     }
 
-    console.log('selectedsources array', selectedSources);
+
 
     return (
         <div className="flex flex-col justify-center items-center px-4">

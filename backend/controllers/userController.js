@@ -36,9 +36,10 @@ async function registerUser(req, res) {
             bookmarkedArticles: []
         }
         const insertedUser = await usersCollection.insertOne(newUser)
+        const user = await usersCollection.findOne({ email: email.toLowerCase() })
 
         const token = jwt.sign({ id: insertedUser.insertedId }, JWT_SECRET, { expiresIn: '72h' }) //JWT Token
-        return res.status(200).json({ message: "User registered successfully!", insertedUser, token })
+        return res.status(200).json({ message: "User registered successfully!", user, token })
     } catch (error) {
         console.error(error)
         return res.status(500).json({ message: 'Failed to register user! Please try again' })

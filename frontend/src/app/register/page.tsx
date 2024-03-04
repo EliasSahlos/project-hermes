@@ -8,6 +8,7 @@ import { useAuth } from "@/context/auth-context";
 function RegisterPage() {
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    
     const { login } = useAuth();
     const router = useRouter();
 

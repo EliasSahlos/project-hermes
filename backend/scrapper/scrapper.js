@@ -100,13 +100,17 @@ async function scrapeArticle(page, articleUrl, category) {
 
             //Fetch source of the article
             articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
-            if (!articleData.source) {
-                const urlParts = articleUrl.split('/');
-                if (urlParts.length >= 3) {
-                    articleData.source = urlParts[2];
-                } else {
-                    // If URL is not in the expected format, set source as Unknown
-                    articleData.source = 'Unknown';
+            // If it's too long assume it's garbage and grab it from URL
+            if(articleData.source.length > 25){
+                articleData.source = ''
+                if (!articleData.source) {
+                    const urlParts = articleUrl.split('/');
+                    if (urlParts.length >= 3) {
+                        articleData.source = urlParts[2];
+                    } else {
+                        // If URL is not in the expected format, set source as Unknown
+                        articleData.source = 'Unknown';
+                    }
                 }
             }
 

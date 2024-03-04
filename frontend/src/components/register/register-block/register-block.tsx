@@ -1,13 +1,13 @@
-'use client'
-import { useAuth } from "@/context/auth-context";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Checkbox, TextField } from "@mui/material";
 import LinearLoading from "@/components/shared/linear-loading/linear-loading";
 import ErrorAlert from "@/components/shared/alerts/error-alert/error-alert";
 
-function RegisterBlock() {
+interface RegisterBlockProps {
+    onRegisterFormSubmitHandler: (username: string, email: string, password: string, isSubmitEnabled: boolean) => void;
+}
+
+function RegisterBlock({ onRegisterFormSubmitHandler }: RegisterBlockProps) {
     const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -17,15 +17,29 @@ function RegisterBlock() {
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const router = useRouter();
-
-    const isSubmitEnabled: any = username && email && password && retypePassword && passwordMatch && termsChecked;
-
-    function emailValidation(email: string): boolean {
-        const regex = /\S+@\S+\.\S+/;
-        return regex.test(email); //True if matches, False if not
+    // Function to check if all required fields are filled
+    function isFormValid() {
+        return username && email && password && retypePassword && passwordMatch && termsChecked;
     }
 
+    // Submit form handler
+    function registerFormSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (!isFormValid()) {
+            setError('Please provide all the required fields');
+            return;
+        }
+
+        onRegisterFormSubmitHandler(username, email, password, isFormValid());
+    }
+
+    // Function to validate email
+    function emailValidation(email: string): boolean {
+        const regex = /\S+@\S+\.\S+/;
+        return regex.test(email);
+    }
+
+    // Event handlers for form inputs
     function usernameInputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setUsername(e.target.value);
     }
@@ -59,19 +73,6 @@ function RegisterBlock() {
 
     function termsCheckboxHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setTermsChecked(e.target.checked);
-    }
-
-    //TODO: Refactor it out of component
-    function registerFormSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        if (!isSubmitEnabled) {
-            setError('Please provide all the required fields');
-            return;
-        }
-        setError('');
-        setLoading(true);
-        localStorage.setItem('registrationData', JSON.stringify({ username, email, password }))
-        router.push('/register/pick-sources')
     }
 
     return (
@@ -133,6 +134,7 @@ function RegisterBlock() {
                             <button
                                 className="bg-[#9354ba] text-white shadow-md rounded hover:bg-[#60377a] ease-in duration-200 p-2"
                                 type="submit"
+                                disabled={!isFormValid()}
                             >
                                 Pick favourite sources
                             </button>

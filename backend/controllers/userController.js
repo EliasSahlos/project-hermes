@@ -8,8 +8,8 @@ const uri = process.env.MONGO_ATLAS_URI
 const JWT_SECRET = uuidv4()
 
 async function registerUser(req, res) {
-    const { username, email, password, selectedSources } = req.body
-    if (!username || !email || !password || !selectedSources) {
+    const { username, email, password } = req.body
+    if (!username || !email || !password) {
         return res.status(400).json({ success: false, message: 'Please provide all the required fields' })
     }
     const client = new MongoClient(uri)
@@ -33,7 +33,6 @@ async function registerUser(req, res) {
             email: email.toLowerCase(),
             password: hashedPassword,
             isAdmin: false,
-            favouriteSources: selectedSources,
             bookmarkedArticles: []
         }
         const insertedUser = await usersCollection.insertOne(newUser)

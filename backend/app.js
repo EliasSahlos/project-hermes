@@ -8,7 +8,8 @@ const articleRoutes = require('./routes/articleRoutes')
 const userRoutes = require('./routes/userRoutes')
 const websitesRoutes = require('./routes/websitesRoutes')
 
-const { fetchDataPeriodically } = require('./controllers/fetchCotroller')
+const { fetchDataPeriodically, deleteDataPeriodically} = require('./controllers/cronCotroller')
+
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -19,6 +20,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/websites', websitesRoutes)
 
 fetchDataPeriodically()
+deleteDataPeriodically()
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

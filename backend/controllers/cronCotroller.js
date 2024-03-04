@@ -1,5 +1,6 @@
 const cron = require('node-cron')
 const {scrapeArticles} = require("./articleController");
+const {deleteOldArticles} = require("./articleController")
 
 // Define a function to be run periodically
 const fetchDataPeriodically = () => {
@@ -15,4 +16,15 @@ const fetchDataPeriodically = () => {
     });
 };
 
-module.exports = {fetchDataPeriodically}
+const deleteDataPeriodically = () => {
+    cron.schedule('*/10 * * * *', async () => {
+        try {
+            await deleteOldArticles()
+            console.log("Deleting old articles")
+        } catch (error){
+            console.log("Error while deleting old articles", error)
+        }
+    })
+}
+
+module.exports = {fetchDataPeriodically, deleteDataPeriodically}

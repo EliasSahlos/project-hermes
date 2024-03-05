@@ -148,7 +148,7 @@ async function deleteOldArticles(){
         // Delete articles older than 3 days
         const deleteResult = await articlesCollection.deleteMany({time: {$lt: isoThreeDaysAgo}})
         console.log(`${deleteResult.deletedCount} articles were deleted.`)
-        console.log('Deleted articles:', oldArticles);
+        // console.log('Deleted articles:', oldArticles);
     } catch (error){
         console.log("Error deleting articles", error)
     } finally {

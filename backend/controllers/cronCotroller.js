@@ -17,7 +17,7 @@ const fetchDataPeriodically = () => {
 };
 
 const deleteDataPeriodically = () => {
-    cron.schedule('*/10 * * * *', async () => {
+    cron.schedule('*/15 * * * *', async () => {
         try {
             await deleteOldArticles()
             console.log("Deleting old articles")

@@ -37,8 +37,9 @@ function FeedPage() {
             } else {
                 axios.get('http://localhost:3001/api/articles/all')
                     .then((response) => {
-                        setArticles(response.data.articles);
-                        localStorage.setItem('storedArticles', JSON.stringify(response.data.articles))
+                        const reversedResults = response.data.articles.reverse()
+                        setArticles(reversedResults);
+                        localStorage.setItem('storedArticles', JSON.stringify(reversedResults))
                         setIsLoading(false)
                     })
                     .catch((error) => {

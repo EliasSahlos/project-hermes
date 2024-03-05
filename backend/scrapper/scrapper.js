@@ -82,7 +82,7 @@ async function scrapeArticle(page, articleUrl, category) {
             for (const selector of articleSelectors) {
                 articleData.content = await page.$eval(selector, el => el.textContent.trim()).catch(() => '')
                 if (articleData.content) {
-                    articleData.content = articleData.content.replace(/\n/g, '').replace(/\t/g, '')
+                    articleData.content = articleData.content.replace(/\n/g, '').replace(/\t/g, '').replace(/<[^>]*>?/gm, '')
                     break
                 }
             }

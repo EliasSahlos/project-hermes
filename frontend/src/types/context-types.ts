@@ -1,3 +1,11 @@
+interface AuthContextProps {
+    isAuthenticated: boolean
+    userInfo: any
+    register: (token: string) => void
+    login: (token: string, user: any) => void
+    logout: () => void
+}
+
 interface PaginationContextProps {
     currentPage: number
     setCurrentPage: (page: number) => void
@@ -5,10 +13,3 @@ interface PaginationContextProps {
     pages: number
 }
 
-interface AuthContextProps {
-    isAuthenticated: boolean;
-    userInfo: any
-    register: (token: string) => void;
-    login: (token: string, user: any) => void;
-    logout: () => void;
-}

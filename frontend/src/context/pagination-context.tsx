@@ -3,7 +3,7 @@ import { ReactNode, createContext, useContext, useState } from "react"
 
 const PaginationContext = createContext<PaginationContextProps | undefined>(undefined)
 
-export function PaginationProvider({ children, articles }: { children: ReactNode, articles: Article[] }) {
+export function PaginationProvider({ children, articles }: { children: ReactNode, articles: Article[]}) {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [postsPerPage, setPostsPerPage] = useState<number>(24)
 

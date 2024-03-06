@@ -7,5 +7,7 @@ router.get('/scrape', articleController.scrapeArticles)
 router.get('/all', articleController.getAllArticles)
 router.get('/id/:id', articleController.getArticleById)
 router.get('/category/:category', articleController.getArticleByCategory)
+router.post('/filter', articleController.getArticlesByCategories);
+
 
 module.exports = router

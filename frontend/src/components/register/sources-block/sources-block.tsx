@@ -26,10 +26,7 @@ function SourcesBlock({ sources, onSelectedSources }: WebsitesSourcesProps) {
             return 'w-[180px] h-[180px] bg-[#d5b4e9] rounded shadow-md border-[1px] border-black flex flex-col justify-center items-center relative p-2 scale-110 cursor-pointer'
         }
     }
-
-    console.log("SELECTED SOURCES:",selectedSources);
-
-
+    
     return (
         <div className="flex justify-center items-center">
             <div className="mb-6">

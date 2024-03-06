@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { PaginationProvider } from "@/context/pagination-context"
-import ArticlesCard from "@/components/feed/articles-card/articles-card"
-import PaginationBlock from "@/components/feed/pagination-block/pagination-block"
+import ArticlesCard from "@/components/feed/articles-block/articles-card/articles-card"
+import PaginationBlock from "@/components/feed/articles-block/pagination-block/pagination-block"
 import SpinnerLoading from "@/components/shared/spinner-loading/spinner-loading"
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useParams } from "next/navigation"
@@ -17,8 +17,6 @@ function CategorizedArticles() {
     useEffect(() => {
         fetchArticleByCategory(category)
     }, [])
-
-    console.log("Articles when fetch:", articles);
 
     async function fetchArticleByCategory(category: any) {
         setIsLoading(true)

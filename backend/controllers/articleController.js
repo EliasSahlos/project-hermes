@@ -76,7 +76,7 @@ async function getArticleById(req, res) {
     const client = new MongoClient(uri)
     try {
         const { id } = req.params
-        console.log('Article ID:', id)
+        console.log('Article ID inside getArticleByID:', id)
 
         // Connects to Database
         await client.connect()

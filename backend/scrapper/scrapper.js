@@ -1,10 +1,11 @@
-const { chromium } = require("playwright")
+const {chromium} = require("playwright")
 const websites = require('./websites')
 
 const startingArticleLinks = ['h2', 'h3', '.media', '.gtr']
 const titleSelectors = ['h1.fw-headline', '.entry-title', '.article-title', '.article__title', '.headline', '.itemTitle', '.title', 'h1', 'h2', 'h3']
 const articleSelectors = ['div.articletext', 'div.article', 'div.entry-content', 'div.content', 'div.itemFullText', 'div.main-text', 'div.story-fulltext', 'div.td-post-content', 'div.article__body', '.cntTxt']
 const timeSelectors = ['.time', '.date', 'time']
+
 // const imageSelectors = ['.image', '.img', 'img', 'picture']
 
 async function fetchArticlesFromWebsites() {
@@ -21,7 +22,7 @@ async function fetchArticlesFromWebsites() {
 
             for (const category in website.categories) {
                 //Navigate to the URL of the current category
-                await page.goto(website.categories[category], { waitUntil: 'domcontentloaded' })
+                await page.goto(website.categories[category], {waitUntil: 'domcontentloaded'})
                 let articleLinks = []
 
                 //Fetch article URLs from current page
@@ -67,7 +68,7 @@ async function scrapeArticle(page, articleUrl, category) {
     try {
         if (articleUrl) {
             // Navigate to the URL of the article
-            await page.goto(articleUrl, { waitUntil: 'domcontentloaded' })
+            await page.goto(articleUrl, {waitUntil: 'domcontentloaded'})
 
             //Fetch title of the article
             for (const selector of titleSelectors) {
@@ -81,7 +82,7 @@ async function scrapeArticle(page, articleUrl, category) {
             for (const selector of articleSelectors) {
                 articleData.content = await page.$eval(selector, el => el.textContent.trim()).catch(() => '')
                 if (articleData.content) {
-                    articleData.content = articleData.content.replace(/\n/g, '').replace(/\t/g, '')
+                    articleData.content = articleData.content.replace(/\n/g, '').replace(/\t/g, '').replace(/<[^>]*>?/gm, '')
                     break
                 }
             }
@@ -100,6 +101,9 @@ async function scrapeArticle(page, articleUrl, category) {
 
             //Fetch source of the article
             articleData.source = await page.$eval('meta[property="og:site_name"]', el => el.content.trim()).catch(() => '')
+            // If it's too long assume it's garbage and grab it from URL
+            if (articleData.source.length > 25)
+                articleData.source = ''
             if (!articleData.source) {
                 const urlParts = articleUrl.split('/');
                 if (urlParts.length >= 3) {
@@ -109,6 +113,7 @@ async function scrapeArticle(page, articleUrl, category) {
                     articleData.source = 'Unknown';
                 }
             }
+
 
             const images = await page.$$eval('img', imgs => imgs.map(img => ({
                 src: img.getAttribute('src'),
@@ -137,4 +142,4 @@ async function scrapeArticle(page, articleUrl, category) {
 }
 
 
-module.exports = { fetchArticlesFromWebsites }
+module.exports = {fetchArticlesFromWebsites}

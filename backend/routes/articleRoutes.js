@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const articleController = require('../controllers/articleController')
+const viewsController = require('../controllers/viewsController')
 
 // api/articles
 router.get('/scrape', articleController.scrapeArticles)
 router.get('/all', articleController.getAllArticles)
 router.get('/id/:id', articleController.getArticleById)
 router.get('/category/:category', articleController.getArticleByCategory)
-router.post('/filter', articleController.getArticlesByCategories);
-
-
+router.put('/id/:id/views', viewsController.updateArticleViewCount)
+router.post('/filter', articleController.getArticlesByCategories)
 module.exports = router

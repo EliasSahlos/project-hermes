@@ -30,12 +30,22 @@ function FeedPage() {
                     setArticles(data);
                     setIsLoading(false);
                     return;
+                } else {
+                    localStorage.removeItem('storedArticles')
                 }
+            } else {
+                axios.get('http://localhost:3001/api/articles/all')
+                    .then((response) => {
+                        const reversedResults = response.data.articles.reverse()
+                        setArticles(reversedResults);
+                        localStorage.setItem('storedArticles', JSON.stringify(reversedResults))
+                        setIsLoading(false)
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching articles:', error);
+                        setIsLoading(false)
+                    });
             }
-            const response = await axios.get('http://localhost:3001/api/articles/all');
-            setArticles(response.data.articles);
-            cacheArticles(response.data.articles);
-            setIsLoading(false);
         } catch (error) {
             console.error('Error fetching articles:', error);
             setIsLoading(false);

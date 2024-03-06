@@ -19,6 +19,7 @@ module.exports = {
             'whyathens.com',
             'img1.wsimg.com',
             'i.pinimg.com',
+            'img.cnngreece.gr',
         ]
     },
 }

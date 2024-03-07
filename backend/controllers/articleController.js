@@ -100,6 +100,33 @@ async function getArticleById(req, res) {
     }
 }
 
+async function getArticlesByCategories(req, res) {
+    const client = new MongoClient(uri)
+    try {
+        const { categories } = req.body // Extract categories from the request body
+
+        // Connect to Database
+        await client.connect()
+        const db = client.db('app-data')
+        const articlesCollection = db.collection('articles')
+
+        // Find articles by categories
+        const articles = await articlesCollection.find({ category: { $in: categories } }).toArray()
+
+        if (!articles || articles.length === 0) {
+            return res.status(404).json({ message: 'Articles not found' })
+        }
+
+        // Return the articles
+        res.status(200).json(articles)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal Server Error' })
+    } finally {
+        await client.close()
+    }
+}
+
 async function getArticleByCategory(req, res) {
     const client = new MongoClient(uri)
     try {

@@ -9,5 +9,5 @@ router.get('/all', articleController.getAllArticles)
 router.get('/id/:id', articleController.getArticleById)
 router.get('/category/:category', articleController.getArticleByCategory)
 router.put('/id/:id/views', viewsController.updateArticleViewCount)
-
+router.post('/filter', articleController.getArticlesByCategories)
 module.exports = router

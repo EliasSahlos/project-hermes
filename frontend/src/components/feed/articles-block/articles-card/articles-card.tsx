@@ -1,8 +1,11 @@
+'use client'
 import Link from "next/link"
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { usePagination } from "@/context/pagination-context";
 import { formatDate } from "@/app/formatDate";
+import { useFilters } from "@/context/filters-context";
+import { useEffect } from "react";
 
 function ArticlesCard() {
     const { currentPosts } = usePagination()
@@ -11,7 +14,7 @@ function ArticlesCard() {
         <div>
             <div className="flex justify-center items-center md:px-6">
                 <div className="mb-6">
-                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-6 xl:grid-cols-3 2xl:grid-cols-4">
                         {currentPosts.map((article) => (
                             <div key={article.uuid} className="relative h-[270px] rounded overflow-hidden">
 

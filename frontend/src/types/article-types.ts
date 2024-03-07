@@ -13,3 +13,9 @@ interface Article {
 interface ArticlesProps {
     articles: Article[]
 }
+
+interface ArticlesBlockProps {
+    articles: Article[]
+    isFiltersOpen: boolean
+    isLoading: boolean
+}

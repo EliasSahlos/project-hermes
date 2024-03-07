@@ -16,14 +16,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const token = localStorage.getItem('token');
         if (token !== null) {
             setIsAuthenticated(true);
-        }
-        else {
-            setIsAuthenticated(false)
+        } else {
+            setIsAuthenticated(false);
         }
 
         const savedUserInfo = localStorage.getItem('userInfo');
         if (savedUserInfo) {
-            setUserInfo(JSON.parse(savedUserInfo));
+            try {
+                setUserInfo(JSON.parse(savedUserInfo)); // Parse userInfo only if it exists
+            } catch (error) {
+                console.error('Error parsing user info:', error);
+            }
         }
     }, []);
 

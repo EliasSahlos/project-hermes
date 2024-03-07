@@ -25,7 +25,7 @@ function ArticlesCard() {
                                 />
                                 <div className="absolute top-0 left-0 w-full h-[12%] bg-white/30 backdrop-blur-lg z-50">
                                     <div className="flex justify-between items-center px-2 py-1">
-                                        <h1 className="text-white text-sm">{article.source}</h1>
+                                        <h1 className="text-white text-sm capitalize">{article.source} | {article.category}</h1>
                                         <div className="text-white text-sm hover:scale-110 ease-in duration-200 cursor-pointer">
                                             <BookmarkBorderIcon />
                                         </div>

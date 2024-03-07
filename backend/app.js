@@ -9,7 +9,7 @@ const userRoutes = require('./routes/userRoutes')
 const websitesRoutes = require('./routes/websitesRoutes')
 const articleCategoriesRoutes = require('./routes/articleCategoriesRoutes')
 
-const { fetchDataPeriodically, deleteDataPeriodically} = require('./controllers/cronCotroller')
+const { fetchDataPeriodically, deleteDataPeriodically} = require('./controllers/cronController')
 
 
 app.use(cors())

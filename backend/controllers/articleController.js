@@ -155,9 +155,9 @@ async function getArticleByCategory(req, res) {
     }
 }
 
-async function deleteOldArticles(){
+async function deleteOldArticles() {
     const client = new MongoClient(uri)
-    try{
+    try {
         // Connect to Database
         await client.connect()
         const db = client.db("app-data")
@@ -166,21 +166,18 @@ async function deleteOldArticles(){
         // Calculate the date 3 days ago
         const threeDaysAgo = new Date()
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
-        const isoThreeDaysAgo = threeDaysAgo.toISOString();
-        // console.log(threeDaysAgo)
-        // console.log(isoThreeDaysAgo)
+        const isoThreeDaysAgo = threeDaysAgo.toISOString()
 
-        const oldArticles = await articlesCollection.find({time: {$lt: isoThreeDaysAgo}}).toArray()
+        const oldArticles = await articlesCollection.find({ time: { $lt: isoThreeDaysAgo } }).toArray()
 
         // Delete articles older than 3 days
-        const deleteResult = await articlesCollection.deleteMany({time: {$lt: isoThreeDaysAgo}})
+        const deleteResult = await articlesCollection.deleteMany({ time: { $lt: isoThreeDaysAgo } })
         console.log(`${deleteResult.deletedCount} articles were deleted.`)
-        // console.log('Deleted articles:', oldArticles);
-    } catch (error){
+    } catch (error) {
         console.log("Error deleting articles", error)
     } finally {
         await client.close()
     }
 }
 
-module.exports = { scrapeArticles, getAllArticles, getArticleById, getArticleByCategory, deleteOldArticles }
+module.exports = { scrapeArticles, getAllArticles, getArticleById, getArticleByCategory, deleteOldArticles, getArticlesByCategories }

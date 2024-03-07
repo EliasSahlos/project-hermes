@@ -18,7 +18,7 @@ export function FiltersProvider({ children, articles }: { children: ReactNode, a
 
     useEffect(() => {
         filterArticles()
-    }, [selectedArticleCategories])
+    }, [selectedArticleCategories, articles])
 
     function filterArticles() {
         try {

@@ -31,17 +31,17 @@ function Header() {
     }
 
     return (
-        <AppBar style={{ backgroundColor: 'rgba(213, 180, 233, 0.6)', backdropFilter: "blur(20px)" }}>
+        <AppBar style={{ backgroundColor: 'rgba(99, 102, 241, 0.7)', backdropFilter: "blur(20px)" }}>
             <Toolbar>
                 <div className="flex flex-1">
-                    <h1 className="md:block text-2xl text-black cursor-pointer">
+                    <h1 className="md:block text-2xl text-white cursor-pointer">
                         <Link href={isAuthenticated ? '/feed' : '/'}>Hermes</Link>
                     </h1>
                 </div>
                 {/* Desktop Navigation Menu */}
                 <div className="hidden md:flex">
                     {userMenu.map((menuItem) => (
-                        <ul className="px-4 text-black cursor-pointer hover:scale-110 ease-in duration-200" key={menuItem.title}>
+                        <ul className="px-4 text-white cursor-pointer hover:scale-110 ease-in duration-200" key={menuItem.title}>
                             {menuItem.url ? <Link href={menuItem.url}>{menuItem.title}</Link> : <h1>{menuItem.title}</h1>}
                         </ul>
                     ))}

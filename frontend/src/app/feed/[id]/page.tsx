@@ -1,21 +1,23 @@
 'use client'
 import axios from "axios";
-import {useParams} from "next/navigation";
-import {useEffect, useState} from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import SpinnerLoading from "@/components/shared/spinner-loading/spinner-loading";
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import {formatDate} from "@/app/formatDate";
+import { formatDate } from "@/app/formatDate";
 import Link from "next/link";
 
 function ArticleSinglePage() {
-    const {id} = useParams();
+    const { id } = useParams();
     const [article, setArticle] = useState<Article>();
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
         fetchArticleById(id)
-        updateArticleViewCount(id)
+        return () => {
+            updateArticleViewCount(id)
+        }
     }, [id]);
 
     async function fetchArticleById(articleId: any) {
@@ -40,7 +42,7 @@ function ArticleSinglePage() {
 
     return (
         <div className='mt-28 xl:mx-40 p-4'>
-            {isLoading && <SpinnerLoading/>}
+            {isLoading && <SpinnerLoading />}
             {!isLoading && article &&
                 <div className="bg-white p-4 ">
                     <div className="flex justify-start mb-4">
@@ -55,11 +57,11 @@ function ArticleSinglePage() {
                     </div>
                     <div className="flex justify-center items-center mt-10">
                         {article?.image &&
-                            <Image className="" src={article.image} alt="broken-article-img" width={800} height={700}/>}
+                            <Image className="" src={article.image} alt="broken-article-img" width={800} height={700} />}
                     </div>
                     <div className="flex flex-row justify-between items-center mt-4 border-b-2 p-2">
                         <div className="flex justify-start my-1">
-                            <QueryBuilderIcon fontSize="small"/>
+                            <QueryBuilderIcon fontSize="small" />
                             <h2 className="text-sm mx-2">{formatDate(article.time)}</h2>
                         </div>
                         <div className="bg-purple-200 p-1 rounded-md">

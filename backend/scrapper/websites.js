@@ -102,7 +102,16 @@ const websites = [
             lifestyle: 'https://www.dealnews.gr/category/ygeia-kai-diatrofi/',
             technology: 'https://www.dealnews.gr/category/texnologia/'
         }
+    },
+    {
+        name: 'To Vima',
+        categories: {
+            politics: 'https://www.tovima.gr/category/politics/',
+            economy: 'https://www.tovima.gr/category/finance/',
+            lifestyle: 'https://www.tovima.gr/category/culture/',
+            technology: 'https://www.tovima.gr/category/science/'
+        }
     }
 ]
 
-module.exports = websites;
+module.exports = websites

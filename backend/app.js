@@ -20,7 +20,6 @@ app.use('/api/users', userRoutes)
 app.use('/api/websites', websitesRoutes)
 
 fetchDataPeriodically()
-deleteDataPeriodically()
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

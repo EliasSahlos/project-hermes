@@ -140,8 +140,8 @@ async function deleteOldArticles(){
         const threeDaysAgo = new Date()
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
         const isoThreeDaysAgo = threeDaysAgo.toISOString();
-        console.log(threeDaysAgo)
-        console.log(isoThreeDaysAgo)
+        // console.log(threeDaysAgo)
+        // console.log(isoThreeDaysAgo)
 
         const oldArticles = await articlesCollection.find({time: {$lt: isoThreeDaysAgo}}).toArray()
 

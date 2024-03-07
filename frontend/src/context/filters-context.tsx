@@ -28,8 +28,9 @@ export function FiltersProvider({ children, articles }: { children: ReactNode, a
                 axios.post('http://localhost:3001/api/articles/filter', {
                     categories: selectedArticleCategories
                 })
-                    .then(response => {
-                        setFilteredArticles(response.data);
+                    .then((response) => {
+                        const reversedArticles = response.data.reverse()
+                        setFilteredArticles(reversedArticles);
                     })
                     .catch(error => {
                         console.error('Error filtering articles:', error);
